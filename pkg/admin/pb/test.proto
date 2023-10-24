@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+
+option go_package = ".";
+
+package test;
+
+service Admin {
+  rpc TestCall(TestHello) returns (TestReturn);
+}
+
+message TestHello {
+  string message = 1;
+}
+
+message TestReturn {
+  string message = 1;
+}
