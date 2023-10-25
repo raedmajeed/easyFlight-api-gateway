@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = ".";
+
+service AdminAirline {
+  rpc RegisterFlightType(FlightTypeRequest) returns (FlightTypeResponse);
+}
+
+message Error {
+  int32 code = 1;
+  string message = 2;
+}
+
+// Flight Request, Values are passed through context
+
+message FlightTypeRequest {}
+
+message FlightType {
+  int32 Id = 1;
+  string manufacturer_name = 2;
+  string manufacturer_country = 3;
+  string flight_number = 4;
+  string flight_type = 5;
+  string description = 6;
+  int32 max_distance = 7;
+  int32 max_cruise_speed = 8;
+}
+
+message FlightTypeResponse {
+  FlightType flight_type = 1;
+  int32 code = 2;
+  string message = 3;
+  Error error = 4;
+}
+
+message FlightTypesResponse {
+  repeated FlightType fligh_types = 1;
+  int32 code = 2;
+  string message = 3;
+  Error error = 4;
+}
+

@@ -80,6 +80,22 @@ func NewAdminRoutes(c *gin.Engine, cfg config.Configure) {
 }
 
 
-func (a *Admin) registerFlightType(ctx *gin.Context) {
+func (a *Admin) RegisterFlightType(ctx *gin.Context) {
 	handler.RegisterFlightType(ctx, *a.cfg, a.client)
+}
+
+func (a *Admin) GetFlightTypes(ctx *gin.Context) {
+	handler.GetFlightTypes(ctx, *a.cfg, a.client)
+}
+
+func (a *Admin) GetFlightType(ctx *gin.Context) {
+	handler.GetFlightType(ctx, *a.cfg, a.client)
+}
+
+func (a *Admin) UpdateFlightType(ctx *gin.Context) {
+	handler.UpdateFlightType(ctx, *a.cfg, a.client)
+}
+
+func (a *Admin) DeleteFlightType(ctx *gin.Context) {
+	handler.DeleteFlightType(ctx, *a.cfg, a.client)
 }
