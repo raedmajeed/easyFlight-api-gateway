@@ -10,12 +10,12 @@ import (
 )
 
 
-func ClientDial(cfg config.Configure) (pb.AdminClient, error) {
+func ClientDial(cfg config.Configure) (pb.AdminAirlineClient, error) {
 	grpc, err := grpc.Dial(":" + cfg.ADMINPORT, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Printf("error Dialing to grpc client: %s, ", cfg.ADMINPORT)
 		return nil, err
 	}
 	log.Printf("succesfully Connected to Admin Client at port: %v", cfg.ADMINPORT)
-	return pb.NewAdminClient(grpc), nil
-}	
+	return pb.NewAdminAirlineClient(grpc), nil
+}

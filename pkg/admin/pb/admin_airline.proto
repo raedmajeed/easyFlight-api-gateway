@@ -1,0 +1,91 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = ".";
+
+service AdminAirline {
+  // gRPC methods for all actions on Flight Type
+  rpc RegisterFlightType(FlightTypeRequest) returns (FlightTypeResponse);
+  rpc FetchAllFlightTypes(EmptyRequest) returns (FlightTypesResponse);
+  rpc FetchFlightType(IDRequest) returns (FlightTypeResponse);
+  rpc UpdateFlightType(FlightTypeRequest) returns (FlightTypeResponse);
+  rpc DeleteFlightType(IDRequest) returns (FlightTypeResponse);
+
+  // gRPC methods for all actions on Airline
+  rpc RegisterAirline(AirlineRequest) returns (AirlineResponse);
+  rpc FetchAllAirlines(EmptyRequest) returns (AirlinesResponse);
+  rpc FetchAirline(IDRequest) returns (AirlineResponse);
+  rpc UpdateAirline(AirlineRequest) returns (AirlineResponse);
+  rpc DeleteAirline(IDRequest) returns (AirlineResponse);
+}
+
+message Error {
+  int32 code = 1;
+  string message = 2;
+}
+
+message EmptyRequest {}
+
+message IDRequest {}
+
+// Flight Request, Values are passed through context
+
+enum FlightTypeEnum {
+  COMMERCIAL = 0;
+  MILITARY = 1;
+  CARGO = 2;
+}
+
+message FlightTypeRequest {
+  uint32 id = 1;
+  FlightTypeEnum type = 2;
+  string flight_model = 3;
+  string description = 4;
+  string maunufacturer_name = 5;
+  string manufacturer_country = 6;
+  string max_distance = 7;
+  string cruise_speed = 8;
+}
+
+message FlightTypeResponse {
+  FlightTypeRequest flight_type = 1;
+  int32 code = 2;
+  string message = 3;
+  Error error = 4;
+}
+
+message FlightTypesResponse {
+  repeated FlightTypeRequest flight_types = 1;
+  int32 code = 2;
+  string message = 3;
+  Error error = 4;
+}
+
+// AIRLINE REQUEST
+
+message AirlineRequest {
+  uint32 id = 1;
+  string airline_name = 2;
+  string company_address = 3;
+  string phone_number = 4;
+  string email = 5;
+  string airline_code = 6;
+  string airline_logo_link = 7;
+  string support_documents_link = 8;
+}
+
+message AirlineResponse {
+  AirlineRequest Airline = 1;
+  int32 code = 2;
+  string message = 3;
+  Error error = 4;
+}
+
+message AirlinesResponse {
+  repeated AirlineRequest airlines = 1;
+  int32 code = 2;
+  string message = 3;
+  Error error = 4;
+}
+

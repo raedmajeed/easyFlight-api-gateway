@@ -10,9 +10,8 @@ import (
 )
 
 type Admin struct {
-	c     *gin.Engine
 	cfg   *config.Configure
-	client pb.AdminClient
+	client pb.AdminAirlineClient
 }
 
 func NewAdminRoutes(c *gin.Engine, cfg config.Configure) {
@@ -22,10 +21,11 @@ func NewAdminRoutes(c *gin.Engine, cfg config.Configure) {
 		log.Fatalf("error Not connected with gRPC server, %v", err.Error())
 	}
 	adminHandler := &Admin{
-		c:     c,
 		cfg:   &cfg,
 		client: client,
 	}
+
+	log.Println("reached here")
 
 	apiVersion := c.Group("/api/v1")
 	{
@@ -55,47 +55,68 @@ func NewAdminRoutes(c *gin.Engine, cfg config.Configure) {
 			admin.GET("/airlines/rejected", adminHandler.GetRejectedAirlines)
 
 			// Airports routes
-			admin.POST("/airports", adminHandler.CreateAirport)
-			admin.PUT("/airports/:airport_id", adminHandler.UpdateAirport)
-			admin.DELETE("/airports/:airport_id", adminHandler.DeleteAirport)
-			admin.GET("/airports/:airport_id", adminHandler.GetAirport)
-			admin.GET("/airports", adminHandler.GetAirports)
+			// admin.POST("/airports", adminHandler.CreateAirport)
+			// admin.PUT("/airports/:airport_id", adminHandler.UpdateAirport)
+			// admin.DELETE("/airports/:airport_id", adminHandler.DeleteAirport)
+			// admin.GET("/airports/:airport_id", adminHandler.GetAirport)
+			// admin.GET("/airports", adminHandler.GetAirports)
 
 			// Schedules routes
-			admin.POST("/schedules", adminHandler.CreateSchedule)
-			admin.PUT("/schedules/:schedule_id", adminHandler.UpdateSchedule)
-			admin.DELETE("/schedules/:schedule_id", adminHandler.DeleteSchedule)
-			admin.GET("/schedules/:schedule_id", adminHandler.GetSchedule)
-			admin.GET("/schedules", adminHandler.GetSchedules)
+			// admin.POST("/schedules", adminHandler.CreateSchedule)
+			// admin.PUT("/schedules/:schedule_id", adminHandler.UpdateSchedule)
+			// admin.DELETE("/schedules/:schedule_id", adminHandler.DeleteSchedule)
+			// admin.GET("/schedules/:schedule_id", adminHandler.GetSchedule)
+			// admin.GET("/schedules", adminHandler.GetSchedules)
 
 			// Fleet routes
-			admin.GET("/fleet/:fleet_id", adminHandler.GetFleet)
-			admin.GET("/fleet", adminHandler.GetFleetList)
+			// admin.GET("/fleet/:fleet_id", adminHandler.GetFleet)
+			// admin.GET("/fleet", adminHandler.GetFleetList)
 
 			// Flight Charts
-			admin.GET("/flight-charts/:chart_id", adminHandler.GetFlightChart)
-			admin.GET("/flight-charts", adminHandler.GetFlightCharts)
+			// admin.GET("/flight-charts/:chart_id", adminHandler.GetFlightChart)
+			// admin.GET("/flight-charts", adminHandler.GetFlightCharts)
 		}
 	}
 }
 
 
 func (a *Admin) RegisterFlightType(ctx *gin.Context) {
-	handler.RegisterFlightType(ctx, *a.cfg, a.client)
+	handler.RegisterFlightType(ctx, a.client)
 }
 
 func (a *Admin) GetFlightTypes(ctx *gin.Context) {
-	handler.GetFlightTypes(ctx, *a.cfg, a.client)
+	log.Println("reached")
+	handler.GetFlightTypes(ctx, a.client)
 }
 
 func (a *Admin) GetFlightType(ctx *gin.Context) {
-	handler.GetFlightType(ctx, *a.cfg, a.client)
+	handler.GetFlightType(ctx, a.client)
 }
 
 func (a *Admin) UpdateFlightType(ctx *gin.Context) {
-	handler.UpdateFlightType(ctx, *a.cfg, a.client)
+	handler.UpdateFlightType(ctx, a.client)
 }
 
 func (a *Admin) DeleteFlightType(ctx *gin.Context) {
-	handler.DeleteFlightType(ctx, *a.cfg, a.client)
+	handler.DeleteFlightType(ctx, a.client)
+}
+
+func (a *Admin) VerifyAirline(ctx *gin.Context) {
+	handler.VerifyAirline(ctx, a.client)
+}
+
+func (a *Admin) GetAirline(ctx *gin.Context) {
+	handler.GetAirline(ctx, a.client)
+}
+
+func (a *Admin) DeleteAirline(ctx *gin.Context) {
+	handler.DeleteAirline(ctx, a.client)
+}
+
+func (a *Admin) GetAcceptedAirlines(ctx *gin.Context) {
+	handler.GetAcceptedAirlines(ctx, a.client)
+}
+
+func (a *Admin) GetRejectedAirlines(ctx *gin.Context) {
+	handler.GetRejectedAirlines(ctx, a.client)
 }

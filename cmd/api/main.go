@@ -15,5 +15,6 @@ func main() {
 	}
 	r := gin.Default()
 	admin.NewAdminRoutes(r, *conf)
+	admin.NewAirlineRoutes(r, *conf)
 	r.Run(":" + conf.PORT)
 }
