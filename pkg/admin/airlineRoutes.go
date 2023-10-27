@@ -10,8 +10,8 @@ import (
 )
 
 type Airline struct {
-	c     *gin.Engine
-	cfg   *config.Configure
+	c      *gin.Engine
+	cfg    *config.Configure
 	client pb.AdminAirlineClient
 }
 
@@ -22,8 +22,8 @@ func NewAirlineRoutes(c *gin.Engine, cfg config.Configure) {
 		log.Fatalf("error Not connected with gRPC server, %v", err.Error())
 	}
 	airlineHandler := &Airline{
-		c:     c,
-		cfg:   &cfg,
+		c:      c,
+		cfg:    &cfg,
 		client: client,
 	}
 
@@ -40,18 +40,18 @@ func NewAirlineRoutes(c *gin.Engine, cfg config.Configure) {
 		airline.PUT("/:airline_id", airlineHandler.UpdateAirline)
 
 		// Seats routes
-		// seats := airline.Group("/:airline_id/seats")
+		seats := airline.Group("/:airline_id/seats")
 		// {
-		// 	seats.POST("", airlineHandler.CreateSeat)
+			seats.POST("", airlineHandler.CreateAirlineSeat)
 		// 	seats.PUT("/:seat_id", airlineHandler.UpdateSeat)
 		// 	seats.GET("", airlineHandler.GetSeats)
 		// 	seats.DELETE("/:seat_id", airlineHandler.DeleteSeat)
 		// }
 
 		// Baggage Policies routes
-		// baggagePolicies := airline.Group("/:airline_id/baggage-policies")
+		baggagePolicies := airline.Group("/:airline_id/baggage-policies")
 		// {
-		// 	baggagePolicies.POST("", airlineHandler.CreateBaggagePolicy)
+			baggagePolicies.POST("", airlineHandler.CreateAirlineBaggagePolicy)
 		// 	baggagePolicies.PUT("/:policy_id", airlineHandler.UpdateBaggagePolicy)
 		// 	baggagePolicies.DELETE("/:policy_id", airlineHandler.DeleteBaggagePolicy)
 		// 	baggagePolicies.GET("", airlineHandler.GetBaggagePolicies)
@@ -100,4 +100,16 @@ func (a *Airline) VerifyRegistration(ctx *gin.Context) {
 
 func (a *Airline) UpdateAirline(ctx *gin.Context) {
 	handler.RegisterAirline(ctx, a.client)
+}
+
+func (a *Airline) CreateAirlineSeat(ctx *gin.Context) {
+	handler.CreateAirlineSeat(ctx, a.client)
+}
+
+func (a *Airline) CreateAirlineBaggagePolicy(ctx *gin.Context) {
+	handler.CreateAirlineBaggagePolicy(ctx, a.client)
+}
+
+func (a *Airline) CreateAirlineCancellationPolicy(ctx *gin.Context) {
+	handler.CreateAirlineCancellationPolicy(ctx, a.client)
 }

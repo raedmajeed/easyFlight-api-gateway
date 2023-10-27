@@ -5,10 +5,11 @@ import (
 )
 
 type Configure struct {
-	PORT					string		`mapstructure:"PORT"`
-	ADMINPORT			string		`mapstructure:"ADMINPORT"`
-	BSERVICEPORT	string		`mapstructure:"BSERVICEPORT"`
-	SECRETKEY			string		`mapstructure:"SECRETKEY"`
+	PORT         string `mapstructure:"PORT"`
+	ADMINPORT    string `mapstructure:"ADMINPORT"`
+	BSERVICEPORT string `mapstructure:"BSERVICEPORT"`
+	SECRETKEY    string `mapstructure:"SECRETKEY"`
+	REDISHOST    string `mapstructure:"REDISHOST"`
 }
 
 func LoadConfigure() (*Configure, error) {
@@ -20,8 +21,8 @@ func LoadConfigure() (*Configure, error) {
 	err = viper.Unmarshal(&cfg)
 
 	if err != nil {
-		return &Configure{}, err
+		return &Configure{}, nil
 	}
-	
+
 	return &cfg, nil
 }

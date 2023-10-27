@@ -4,14 +4,16 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-redis/redis/v8"
 	handler "github.com/raedmajeed/api-gateway/pkg/admin/handlers"
 	pb "github.com/raedmajeed/api-gateway/pkg/admin/pb"
 	"github.com/raedmajeed/api-gateway/pkg/config"
 )
 
 type Admin struct {
-	cfg   *config.Configure
+	cfg    *config.Configure
 	client pb.AdminAirlineClient
+	redis  *redis.Client
 }
 
 func NewAdminRoutes(c *gin.Engine, cfg config.Configure) {
@@ -21,7 +23,7 @@ func NewAdminRoutes(c *gin.Engine, cfg config.Configure) {
 		log.Fatalf("error Not connected with gRPC server, %v", err.Error())
 	}
 	adminHandler := &Admin{
-		cfg:   &cfg,
+		cfg:    &cfg,
 		client: client,
 	}
 
@@ -30,11 +32,11 @@ func NewAdminRoutes(c *gin.Engine, cfg config.Configure) {
 	apiVersion := c.Group("/api/v1")
 	{
 		// Group routes under /api/v1/airline
-		airline := apiVersion.Group("/airline")
+		// airline := apiVersion.Group("/airline")
 		{
 			// Airline-specific routes
-			airline.GET("/:airline_id", adminHandler.GetAirline)
-			airline.DELETE("/:airline_id", adminHandler.DeleteAirline)
+			// airline.GET("/:airline_id", adminHandler.GetAirline)
+			// airline.DELETE("/:airline_id", adminHandler.DeleteAirline)
 		}
 
 		// Group routes under /api/v1/admin
@@ -48,11 +50,11 @@ func NewAdminRoutes(c *gin.Engine, cfg config.Configure) {
 			admin.DELETE("/flight-types/:flight_type_id", adminHandler.DeleteFlightType)
 
 			// Verify Airline
-			admin.POST("/verify-airline/:airline_id", adminHandler.VerifyAirline)
+			// admin.POST("/verify-airline/:airline_id", adminHandler.VerifyAirline)
 
-			// Airlines routes
-			admin.GET("/airlines/accepted", adminHandler.GetAcceptedAirlines)
-			admin.GET("/airlines/rejected", adminHandler.GetRejectedAirlines)
+			// // Airlines routes
+			// admin.GET("/airlines/accepted", adminHandler.GetAcceptedAirlines)
+			// admin.GET("/airlines/rejected", adminHandler.GetRejectedAirlines)
 
 			// Airports routes
 			// admin.POST("/airports", adminHandler.CreateAirport)
@@ -79,7 +81,6 @@ func NewAdminRoutes(c *gin.Engine, cfg config.Configure) {
 	}
 }
 
-
 func (a *Admin) RegisterFlightType(ctx *gin.Context) {
 	handler.RegisterFlightType(ctx, a.client)
 }
@@ -101,22 +102,22 @@ func (a *Admin) DeleteFlightType(ctx *gin.Context) {
 	handler.DeleteFlightType(ctx, a.client)
 }
 
-func (a *Admin) VerifyAirline(ctx *gin.Context) {
-	handler.VerifyAirline(ctx, a.client)
-}
+// func (a *Admin) VerifyAirline(ctx *gin.Context) {
+// 	handler.VerifyAirline(ctx, a.client)
+// }
 
-func (a *Admin) GetAirline(ctx *gin.Context) {
-	handler.GetAirline(ctx, a.client)
-}
+// func (a *Admin) GetAirline(ctx *gin.Context) {
+// 	handler.GetAirline(ctx, a.client)
+// }
 
-func (a *Admin) DeleteAirline(ctx *gin.Context) {
-	handler.DeleteAirline(ctx, a.client)
-}
+// func (a *Admin) DeleteAirline(ctx *gin.Context) {
+// 	handler.DeleteAirline(ctx, a.client)
+// }
 
-func (a *Admin) GetAcceptedAirlines(ctx *gin.Context) {
-	handler.GetAcceptedAirlines(ctx, a.client)
-}
+// func (a *Admin) GetAcceptedAirlines(ctx *gin.Context) {
+// 	handler.GetAcceptedAirlines(ctx, a.client)
+// }
 
-func (a *Admin) GetRejectedAirlines(ctx *gin.Context) {
-	handler.GetRejectedAirlines(ctx, a.client)
-}
+// func (a *Admin) GetRejectedAirlines(ctx *gin.Context) {
+// 	handler.GetRejectedAirlines(ctx, a.client)
+// }

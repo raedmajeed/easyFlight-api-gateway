@@ -18,6 +18,28 @@ service AdminAirline {
   rpc FetchAirline(IDRequest) returns (AirlineResponse);
   rpc UpdateAirline(AirlineRequest) returns (AirlineResponse);
   rpc DeleteAirline(IDRequest) returns (AirlineResponse);
+  rpc VerifyAirline(OTPRequest) returns (AirlineResponse);
+
+  // gRPC methods for all actions on Airline Seats
+  rpc RegisterAirlineSeat(AirlineSeatRequest) returns (AirlineSeatResponse);
+  rpc FetchAllAirlineSeats(EmptyRequest) returns (AirlineSeatsResponse);
+  rpc FetchAirlineSeat(IDRequest) returns (AirlineSeatResponse);
+  rpc UpdateAirlineSeat(AirlineSeatRequest) returns (AirlineSeatResponse);
+  rpc DeleteAirlineSeat(IDRequest) returns (AirlineSeatResponse);
+
+  // gRPC methods for all actions on Airline Baggage
+  rpc RegisterAirlineBaggage(AirlineBaggageRequest) returns (AirlineBaggageResponse);
+  rpc FetchAllAirlineBaggages(EmptyRequest) returns (AirlineBaggagesResponse);
+  rpc FetchAirlineBaggage(IDRequest) returns (AirlineBaggageResponse);
+  rpc UpdateAirlineBaggage(AirlineBaggageRequest) returns (AirlineBaggageResponse);
+  rpc DeleteAirlineBaggage(IDRequest) returns (AirlineBaggageResponse);
+
+  // gRPC methods for all actions on Airline Cancellation
+  rpc RegisterAirlineCancellation(AirlineCancellationRequest) returns (AirlineCancellationResponse);
+  rpc FetchAllAirlineCancellations(EmptyRequest) returns (AirlineCancellationsResponse);
+  rpc FetchAirlineCancellation(IDRequest) returns (AirlineCancellationResponse);
+  rpc UpdateAirlineCancellation(AirlineCancellationRequest) returns (AirlineCancellationResponse);
+  rpc DeleteAirlineCancellation(IDRequest) returns (AirlineCancellationResponse);
 }
 
 message Error {
@@ -27,7 +49,14 @@ message Error {
 
 message EmptyRequest {}
 
-message IDRequest {}
+message IDRequest {
+  int32 id = 1;
+}
+
+message OTPRequest {
+  int32 OTP = 1;
+  string email = 2;
+}
 
 // Flight Request, Values are passed through context
 
@@ -38,14 +67,14 @@ enum FlightTypeEnum {
 }
 
 message FlightTypeRequest {
-  uint32 id = 1;
+  int32 id = 1;
   FlightTypeEnum type = 2;
   string flight_model = 3;
   string description = 4;
-  string maunufacturer_name = 5;
+  string manufacturer_name = 5;
   string manufacturer_country = 6;
-  string max_distance = 7;
-  string cruise_speed = 8;
+  int32 max_distance = 7;
+  int32 cruise_speed = 8;
 }
 
 message FlightTypeResponse {
@@ -65,7 +94,7 @@ message FlightTypesResponse {
 // AIRLINE REQUEST
 
 message AirlineRequest {
-  uint32 id = 1;
+  int32 id = 1;
   string airline_name = 2;
   string company_address = 3;
   string phone_number = 4;
@@ -89,3 +118,80 @@ message AirlinesResponse {
   Error error = 4;
 }
 
+// AIRLINE SEAT REQUEST
+
+message AirlineSeatRequest {
+  int32 airline_id = 1;
+  int32 economy_seat_no = 2;
+  int32 buisines_seat_no = 3;
+  int32 economy_seats_per_row=4;
+  int32 buisines_seats_per_row=5;
+}
+
+message AirlineSeatResponse {
+  AirlineSeatRequest airline_seat = 1;
+  bytes economy_seat_layout = 2;
+  bytes buisiness_seat_layout = 3;
+  int32 code = 4;
+  string message = 5;
+  Error error = 6;
+}
+
+message AirlineSeatsResponse {
+  repeated AirlineSeatRequest airline_seats = 1;
+  int32 code = 2;
+  string message = 3;
+  Error error = 4;
+}
+
+// AIRLINE BAGGAGE REQUEST
+
+enum Class {
+  ECONOMY = 0;
+  BUSINESS = 1;
+}
+
+message AirlineBaggageRequest {
+  int32 airline_id = 1;
+  Class class = 2;
+  int32 cabin_allowed_weight = 3;
+  int32 cabin_allowed_dimension = 4;
+  int32 hand_allowed_weight = 5;
+  int32 hand_allowed_dimension = 6;
+  int32 fee_for_extra_kg_cabin = 7;
+  int32 fee_for_extra_kg_hand = 8;
+  string restrictions = 9;
+}
+
+message AirlineBaggageResponse {
+  AirlineBaggageRequest airline_baggage = 1;
+
+}
+
+message AirlineBaggagesResponse {
+  repeated AirlineBaggageRequest airline_baggages = 1;
+  int32 code = 2;
+  string message = 3;
+  Error error = 4;
+}
+
+// AIRLINE CANCELLATION REQUEST
+
+message AirlineCancellationRequest {
+  int32 airline_id = 1;
+  Class class = 2;
+  uint32 cancellation_deadline_before_hours = 3;
+  int32 cancellation_percentage = 4;
+  bool refundable = 5;
+}
+
+message AirlineCancellationResponse {
+  AirlineCancellationRequest airline_cancellation = 1;
+}
+
+message AirlineCancellationsResponse {
+  repeated AirlineCancellationRequest airline_cancellations = 1;
+  int32 code = 2;
+  string message = 3;
+  Error error = 4;
+}
