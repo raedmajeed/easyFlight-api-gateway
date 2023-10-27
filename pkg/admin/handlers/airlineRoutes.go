@@ -11,6 +11,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	dto "github.com/raedmajeed/api-gateway/pkg/DTO"
 	pb "github.com/raedmajeed/api-gateway/pkg/admin/pb"
+	"google.golang.org/grpc/metadata"
 )
 
 func RegisterAirline(ctx *gin.Context, client pb.AdminAirlineClient) {
@@ -155,8 +156,10 @@ func CreateAirlineSeat(ctx *gin.Context, client pb.AdminAirlineClient) {
 		return
 	}
 
-	response, err := client.RegisterAirlineSeat(cont, &pb.AirlineSeatRequest{
-		AirlineId:           int32(req.AirlineId),
+	airline_id := ctx.Param("airline_id")
+	newCont := metadata.NewOutgoingContext(cont, metadata.Pairs("airline_id", airline_id))
+
+	response, err := client.RegisterAirlineSeat(newCont, &pb.AirlineSeatRequest{
 		EconomySeatNo:       int32(req.EconomySeatNumber),
 		BuisinesSeatNo:      int32(req.BuisinesSeatNumber),
 		EconomySeatsPerRow:  int32(req.EconomySeatsPerRow),
@@ -180,9 +183,6 @@ func CreateAirlineSeat(ctx *gin.Context, client pb.AdminAirlineClient) {
 }
 
 func CreateAirlineBaggagePolicy(ctx *gin.Context, client pb.AdminAirlineClient) {
-	body := ctx.Request.Body
-	defer body.Close()
-
 	timeout := time.Second * 1000
 	cont, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
@@ -211,16 +211,22 @@ func CreateAirlineBaggagePolicy(ctx *gin.Context, client pb.AdminAirlineClient) 
 		return
 	}
 
-	response, err := client.RegisterAirlineBaggage(cont, &pb.AirlineBaggageRequest{
-		AirlineId:             int32(req.AirlineId),
-		Class:                 pb.Class(req.FareClass),
-		CabinAllowedWeight:    int32(req.CabinAllowedWeight),
-		CabinAllowedDimension: int32(req.CabinAllowedDimension),
-		HandAllowedWeight:     int32(req.HandAllowedWeight),
-		HandAllowedDimension:  int32(req.HandAllowedDimension),
-		FeeForExtraKgCabin:    int32(req.FeeExtraPerKGCabin),
-		FeeForExtraKgHand:     int32(req.FeeExtraPerKGHand),
-		Restrictions:          req.Restrictions,
+	airline_id := ctx.Param("airline_id")
+	newCont := metadata.NewOutgoingContext(cont, metadata.Pairs("airline_id", airline_id))
+
+	response, err := client.RegisterAirlineBaggage(newCont, &pb.AirlineBaggageRequest{
+		Class:               pb.Class(req.FareClass),
+		CabinAllowedWeight:  int32(req.CabinAllowedWeight),
+		CabinAllowedLength:  int32(req.CabinAllowedLength),
+		CabinAllowedBreadth: int32(req.CabinAllowedBreadth),
+		CabinAllowedHeight:  int32(req.CabinAllowedHeight),
+		HandAllowedWeight:   int32(req.HandAllowedWeight),
+		HandAllowedLength:   int32(req.HandAllowedLength),
+		HandAllowedBreadth:  int32(req.CabinAllowedBreadth),
+		HandAllowedHeight:   int32(req.HandAllowedWeight),
+		FeeForExtraKgCabin:  int32(req.FeeExtraPerKGCabin),
+		FeeForExtraKgHand:   int32(req.FeeExtraPerKGHand),
+		Restrictions:        req.Restrictions,
 	})
 
 	if err != nil {
@@ -271,8 +277,10 @@ func CreateAirlineCancellationPolicy(ctx *gin.Context, client pb.AdminAirlineCli
 		return
 	}
 
-	response, err := client.RegisterAirlineCancellation(cont, &pb.AirlineCancellationRequest{
-		AirlineId:                       int32(req.AirlineId),
+	airline_id := ctx.Param("airline_id")
+	newCont := metadata.NewOutgoingContext(cont, metadata.Pairs("airline_id", airline_id))
+
+	response, err := client.RegisterAirlineCancellation(newCont, &pb.AirlineCancellationRequest{
 		Class:                           pb.Class(req.FareClass), // Convert to the protobuf enum
 		CancellationDeadlineBeforeHours: uint32(req.CancellationDeadlineBefore),
 		CancellationPercentage:          int32(req.CancellationPercentage),

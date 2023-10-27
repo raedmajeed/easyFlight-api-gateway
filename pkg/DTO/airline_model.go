@@ -52,23 +52,27 @@ const (
 )
 
 type AirlineBaggageRequest struct {
-	AirlineId             int    `json:"airline_id" validate:"required,number"`
-	FareClass             Class  `json:"class" validate:"required"`
-	CabinAllowedWeight    int    `json:"cabin_allowed_weight" validate:"required,number"`
-	CabinAllowedDimension int    `json:"cabin_allowed_dimension" validate:"required"`
-	HandAllowedWeight     int    `json:"hand_allowed_weight" validate:"required,number"`
-	HandAllowedDimension  int    `json:"hand_allowed_dimension" validate:"required"`
-	FeeExtraPerKGCabin    int    `json:"fee_for_extra_kg_cabin" validate:"required,number"`
-	FeeExtraPerKGHand     int    `json:"fee_for_extra_kg_hand" validate:"required,number"`
-	Restrictions          string `json:"restrictions"`
+	AirlineId           int    `json:"airline_id" validate:"required,number"`
+	FareClass           int    `json:"class" validate:"required"`
+	CabinAllowedWeight  int    `json:"cabin_allowed_weight" validate:"required,number"`
+	CabinAllowedLength  int    `json:"cabin_allowed_length" validate:"required"`
+	CabinAllowedBreadth int    `json:"cabin_allowed_breadth" validate:"required"`
+	CabinAllowedHeight  int    `json:"cabin_allowed_height" validate:"required"`
+	HandAllowedWeight   int    `json:"hand_allowed_weight" validate:"required,number"`
+	HandAllowedLength   int    `json:"hand_allowed_length" validate:"required"`
+	HandAllowedBreadth  int    `json:"hand_allowed_breadth" validate:"required"`
+	HandAllowedHeight   int    `json:"hand_allowed_height" validate:"required"`
+	FeeExtraPerKGCabin  int    `json:"fee_for_extra_kg_cabin" validate:"required,number"`
+	FeeExtraPerKGHand   int    `json:"fee_for_extra_kg_hand" validate:"required,number"`
+	Restrictions        string `json:"restrictions"`
 }
 
 // AIRLINE CANCELLATION
 
 type AirlineCancellationRequest struct {
-	AirlineId                  int   `json:"airline_id" validate:"required,number"`
-	FareClass                  Class `json:"class" validate:"required"`
-	CancellationDeadlineBefore uint  `json:"cancellation_deadline_before_hours" validate:"required"`
-	CancellationPercentage     int   `json:"cancellation_percentage" validate:"required"`
-	Refundable                 bool  `json:"refundable" validate:"required,boolean"`
+	AirlineId                  int  `json:"airline_id" validate:"required,number"`
+	FareClass                  int  `json:"class" validate:"required"`
+	CancellationDeadlineBefore int `json:"cancellation_deadline_before_hours" validate:"required"`
+	CancellationPercentage     int  `json:"cancellation_percentage" validate:"required"`
+	Refundable                 bool `json:"refundable" validate:"required,boolean"`
 }

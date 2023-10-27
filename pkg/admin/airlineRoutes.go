@@ -58,9 +58,9 @@ func NewAirlineRoutes(c *gin.Engine, cfg config.Configure) {
 		// }
 
 		// Cancellation Policies routes
-		// cancellationPolicies := airline.Group("/:airline_id/cancellation-policies")
+		cancellationPolicies := airline.Group("/:airline_id/cancellation-policies")
 		// {
-		// 	cancellationPolicies.POST("", airlineHandler.CreateCancellationPolicy)
+			cancellationPolicies.POST("", airlineHandler.CreateAirlineCancellationPolicy)
 		// 	cancellationPolicies.PUT("/:policy_id", airlineHandler.UpdateCancellationPolicy)
 		// 	cancellationPolicies.DELETE("/:policy_id", airlineHandler.DeleteCancellationPolicy)
 		// 	cancellationPolicies.GET("", airlineHandler.GetCancellationPolicies)
