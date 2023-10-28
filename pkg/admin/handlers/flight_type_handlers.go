@@ -217,18 +217,3 @@ func DeleteFlightType(ctx *gin.Context, client pb.AdminAirlineClient) {
 		},
 	})
 }
-
-// func VerifyAirline(ctx *gin.Context, client pb.AdminAirlineClient) {
-// }
-
-// func GetAirline(ctx *gin.Context, client pb.AdminAirlineClient) {
-// }
-
-// func DeleteAirline(ctx *gin.Context, client pb.AdminAirlineClient) {
-// }
-
-// func GetAcceptedAirlines(ctx *gin.Context, client pb.AdminAirlineClient) {
-// }
-
-// func GetRejectedAirlines(ctx *gin.Context, client pb.AdminAirlineClient) {
-// }

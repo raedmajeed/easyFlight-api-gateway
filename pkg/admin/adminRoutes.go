@@ -27,11 +27,9 @@ func NewAdminRoutes(c *gin.Engine, cfg config.Configure) {
 		client: client,
 	}
 
-	log.Println("reached here")
-
 	apiVersion := c.Group("/api/v1")
 	{
-		// Group routes under /api/v1/airline
+		//* Group routes under /api/v1/airline
 		// airline := apiVersion.Group("/airline")
 		{
 			// Airline-specific routes
@@ -39,7 +37,7 @@ func NewAdminRoutes(c *gin.Engine, cfg config.Configure) {
 			// airline.DELETE("/:airline_id", adminHandler.DeleteAirline)
 		}
 
-		// Group routes under /api/v1/admin
+		//* Group routes under /api/v1/admin
 		admin := apiVersion.Group("/admin")
 		{
 			// Flight Types routes
@@ -49,32 +47,32 @@ func NewAdminRoutes(c *gin.Engine, cfg config.Configure) {
 			admin.PUT("/flight-types/:flight_type_id", adminHandler.UpdateFlightType)
 			admin.DELETE("/flight-types/:flight_type_id", adminHandler.DeleteFlightType)
 
-			// Verify Airline
+			//* Verify Airline
 			// admin.POST("/verify-airline/:airline_id", adminHandler.VerifyAirline)
 
-			// // Airlines routes
+			//* Airlines routes
 			// admin.GET("/airlines/accepted", adminHandler.GetAcceptedAirlines)
 			// admin.GET("/airlines/rejected", adminHandler.GetRejectedAirlines)
 
-			// Airports routes
-			// admin.POST("/airports", adminHandler.CreateAirport)
+			//* Airports routes
+			admin.POST("/airports", adminHandler.CreateAirport)
 			// admin.PUT("/airports/:airport_id", adminHandler.UpdateAirport)
 			// admin.DELETE("/airports/:airport_id", adminHandler.DeleteAirport)
 			// admin.GET("/airports/:airport_id", adminHandler.GetAirport)
 			// admin.GET("/airports", adminHandler.GetAirports)
 
-			// Schedules routes
+			//* Schedules routes
 			// admin.POST("/schedules", adminHandler.CreateSchedule)
 			// admin.PUT("/schedules/:schedule_id", adminHandler.UpdateSchedule)
 			// admin.DELETE("/schedules/:schedule_id", adminHandler.DeleteSchedule)
 			// admin.GET("/schedules/:schedule_id", adminHandler.GetSchedule)
 			// admin.GET("/schedules", adminHandler.GetSchedules)
 
-			// Fleet routes
+			//* Fleet routes
 			// admin.GET("/fleet/:fleet_id", adminHandler.GetFleet)
 			// admin.GET("/fleet", adminHandler.GetFleetList)
 
-			// Flight Charts
+			//* Flight Charts
 			// admin.GET("/flight-charts/:chart_id", adminHandler.GetFlightChart)
 			// admin.GET("/flight-charts", adminHandler.GetFlightCharts)
 		}
@@ -86,7 +84,6 @@ func (a *Admin) RegisterFlightType(ctx *gin.Context) {
 }
 
 func (a *Admin) GetFlightTypes(ctx *gin.Context) {
-	log.Println("reached")
 	handler.GetFlightTypes(ctx, a.client)
 }
 
@@ -121,3 +118,7 @@ func (a *Admin) DeleteFlightType(ctx *gin.Context) {
 // func (a *Admin) GetRejectedAirlines(ctx *gin.Context) {
 // 	handler.GetRejectedAirlines(ctx, a.client)
 // }
+
+func (a *Admin) CreateAirport(ctx *gin.Context) {
+	handler.CreateAirport(ctx, a.client)
+}
