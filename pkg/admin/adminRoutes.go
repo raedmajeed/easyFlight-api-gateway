@@ -62,7 +62,7 @@ func NewAdminRoutes(c *gin.Engine, cfg config.Configure) {
 			// admin.GET("/airports", adminHandler.GetAirports)
 
 			//* Schedules routes
-			// admin.POST("/schedules", adminHandler.CreateSchedule)
+			admin.POST("/schedules", adminHandler.CreateSchedule)
 			// admin.PUT("/schedules/:schedule_id", adminHandler.UpdateSchedule)
 			// admin.DELETE("/schedules/:schedule_id", adminHandler.DeleteSchedule)
 			// admin.GET("/schedules/:schedule_id", adminHandler.GetSchedule)
@@ -121,4 +121,8 @@ func (a *Admin) DeleteFlightType(ctx *gin.Context) {
 
 func (a *Admin) CreateAirport(ctx *gin.Context) {
 	handler.CreateAirport(ctx, a.client)
+}
+
+func (a *Admin) CreateSchedule(ctx *gin.Context) {
+	handler.CreateSchedule(ctx, a.client)
 }

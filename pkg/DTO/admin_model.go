@@ -24,5 +24,4 @@ type ScheduleRequest struct {
 	ArrivalTime      string `json:"arrival_time" validate:"required,datetime"`
 	DepartureAirport string `json:"departure_airport" validate:"required,alpha,len=3"`
 	ArrivalAirport   string `json:"arrival_airport" validate:"required,alpha,len=3"`
-	Scheduled        string `json:"scheduled" validate:"required,boolean"`
 }
