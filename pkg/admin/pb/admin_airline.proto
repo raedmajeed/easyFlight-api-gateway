@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package pb;
 
+import "google/protobuf/timestamp.proto";
+
 option go_package = ".";
 
 service AdminAirline {
@@ -49,7 +51,7 @@ service AdminAirline {
 
   // gRPC methods for all auth actions
   rpc RegisterLoginRequest(LoginRequest) returns (LoginResponse);
-  rpc RegisterForgotPasswordRequest(ForgotPasswordRequest) returns (EmailResponse);
+  rpc RegisterForgotPasswordRequest(ForgotPasswordRequest) returns (OtpResponse);
   rpc RegisterVerifyOTPRequest(OTPRequest) returns(LoginResponse);
   rpc RegisterConfirmPasswordRequest(ConfirmPasswordRequest) returns (EmailResponse);
 }
@@ -63,6 +65,11 @@ message EmptyRequest {}
 
 message EmailResponse {
   string email = 1;
+}
+
+message OtpResponse {
+  string email = 1;
+  google.protobuf.Timestamp expiration_time = 2;
 }
 
 message IDRequest {

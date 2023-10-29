@@ -94,7 +94,7 @@ type AdminAirlineClient interface {
 	RegisterScheduleRequest(ctx context.Context, in *ScheduleRequest, opts ...grpc.CallOption) (*ScheduleResponse, error)
 	// gRPC methods for all auth actions
 	RegisterLoginRequest(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
-	RegisterForgotPasswordRequest(ctx context.Context, in *ForgotPasswordRequest, opts ...grpc.CallOption) (*EmailResponse, error)
+	RegisterForgotPasswordRequest(ctx context.Context, in *ForgotPasswordRequest, opts ...grpc.CallOption) (*OtpResponse, error)
 	RegisterVerifyOTPRequest(ctx context.Context, in *OTPRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 	RegisterConfirmPasswordRequest(ctx context.Context, in *ConfirmPasswordRequest, opts ...grpc.CallOption) (*EmailResponse, error)
 }
@@ -368,8 +368,8 @@ func (c *adminAirlineClient) RegisterLoginRequest(ctx context.Context, in *Login
 	return out, nil
 }
 
-func (c *adminAirlineClient) RegisterForgotPasswordRequest(ctx context.Context, in *ForgotPasswordRequest, opts ...grpc.CallOption) (*EmailResponse, error) {
-	out := new(EmailResponse)
+func (c *adminAirlineClient) RegisterForgotPasswordRequest(ctx context.Context, in *ForgotPasswordRequest, opts ...grpc.CallOption) (*OtpResponse, error) {
+	out := new(OtpResponse)
 	err := c.cc.Invoke(ctx, AdminAirline_RegisterForgotPasswordRequest_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -436,7 +436,7 @@ type AdminAirlineServer interface {
 	RegisterScheduleRequest(context.Context, *ScheduleRequest) (*ScheduleResponse, error)
 	// gRPC methods for all auth actions
 	RegisterLoginRequest(context.Context, *LoginRequest) (*LoginResponse, error)
-	RegisterForgotPasswordRequest(context.Context, *ForgotPasswordRequest) (*EmailResponse, error)
+	RegisterForgotPasswordRequest(context.Context, *ForgotPasswordRequest) (*OtpResponse, error)
 	RegisterVerifyOTPRequest(context.Context, *OTPRequest) (*LoginResponse, error)
 	RegisterConfirmPasswordRequest(context.Context, *ConfirmPasswordRequest) (*EmailResponse, error)
 	mustEmbedUnimplementedAdminAirlineServer()
@@ -533,7 +533,7 @@ func (UnimplementedAdminAirlineServer) RegisterScheduleRequest(context.Context, 
 func (UnimplementedAdminAirlineServer) RegisterLoginRequest(context.Context, *LoginRequest) (*LoginResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterLoginRequest not implemented")
 }
-func (UnimplementedAdminAirlineServer) RegisterForgotPasswordRequest(context.Context, *ForgotPasswordRequest) (*EmailResponse, error) {
+func (UnimplementedAdminAirlineServer) RegisterForgotPasswordRequest(context.Context, *ForgotPasswordRequest) (*OtpResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterForgotPasswordRequest not implemented")
 }
 func (UnimplementedAdminAirlineServer) RegisterVerifyOTPRequest(context.Context, *OTPRequest) (*LoginResponse, error) {
