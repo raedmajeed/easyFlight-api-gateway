@@ -101,7 +101,7 @@ func VerifyRegistration(ctx *gin.Context, client pb.AdminAirlineClient) {
 	}
 
 	response, err := client.VerifyAirline(cont, &pb.OTPRequest{
-		OTP:   int32(req.Otp),
+		Otp:   int32(req.Otp),
 		Email: req.Email,
 	})
 

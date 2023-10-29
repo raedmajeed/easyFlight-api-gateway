@@ -2,9 +2,10 @@ package admin
 
 import (
 	"log"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-redis/redis/v8"
+	"github.com/raedmajeed/api-gateway/middleware"
 	handler "github.com/raedmajeed/api-gateway/pkg/admin/handlers"
 	pb "github.com/raedmajeed/api-gateway/pkg/admin/pb"
 	"github.com/raedmajeed/api-gateway/pkg/config"
@@ -13,7 +14,7 @@ import (
 type Admin struct {
 	cfg    *config.Configure
 	client pb.AdminAirlineClient
-	redis  *redis.Client
+	// redis  *redis.Client
 }
 
 func NewAdminRoutes(c *gin.Engine, cfg config.Configure) {
@@ -40,12 +41,15 @@ func NewAdminRoutes(c *gin.Engine, cfg config.Configure) {
 		//* Group routes under /api/v1/admin
 		admin := apiVersion.Group("/admin")
 		{
-			// Flight Types routes
-			admin.POST("/flight-types", adminHandler.RegisterFlightType)
-			admin.GET("/flight-types", adminHandler.GetFlightTypes)
-			admin.GET("/flight-types/:flight_type_id", adminHandler.GetFlightType)
-			admin.PUT("/flight-types/:flight_type_id", adminHandler.UpdateFlightType)
-			admin.DELETE("/flight-types/:flight_type_id", adminHandler.DeleteFlightType)
+			//* Logging in
+			admin.POST("/login", adminHandler.AdminLogin)
+
+			//* Flight Types routes
+			admin.POST("/flight-types", adminHandler.Authenticate, adminHandler.RegisterFlightType)
+			admin.GET("/flight-types", adminHandler.Authenticate, adminHandler.GetFlightTypes)
+			admin.GET("/flight-types/:flight_type_id", adminHandler.Authenticate, adminHandler.GetFlightType)
+			admin.PUT("/flight-types/:flight_type_id", adminHandler.Authenticate, adminHandler.UpdateFlightType)
+			admin.DELETE("/flight-types/:flight_type_id", adminHandler.Authenticate, adminHandler.DeleteFlightType)
 
 			//* Verify Airline
 			// admin.POST("/verify-airline/:airline_id", adminHandler.VerifyAirline)
@@ -77,6 +81,19 @@ func NewAdminRoutes(c *gin.Engine, cfg config.Configure) {
 			// admin.GET("/flight-charts", adminHandler.GetFlightCharts)
 		}
 	}
+}
+
+func (a *Admin) Authenticate(ctx *gin.Context) {
+	email, err := middleware.ValidateToken(ctx, *a.cfg, "admin")
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+			"error":  err.Error(),
+			"status": http.StatusUnauthorized,
+		})
+		return
+	}
+	ctx.Set("registered_email", email)
+	ctx.Next()
 }
 
 func (a *Admin) RegisterFlightType(ctx *gin.Context) {
@@ -125,4 +142,8 @@ func (a *Admin) CreateAirport(ctx *gin.Context) {
 
 func (a *Admin) CreateSchedule(ctx *gin.Context) {
 	handler.CreateSchedule(ctx, a.client)
+}
+
+func (a *Admin) AdminLogin(ctx *gin.Context) {
+	handler.Login(ctx, a.client, "admin")
 }
