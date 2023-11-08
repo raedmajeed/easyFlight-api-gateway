@@ -39,7 +39,7 @@ func NewAirlineRoutes(c *gin.Engine, cfg config.Configure) {
 		airline.POST("/verify-registration", airlineHandler.VerifyRegistration)
 
 		// Update airline information
-		airline.PUT("/:airline_id", airlineHandler.authenticate, airlineHandler.UpdateAirline)
+		airline.PUT("/:airline_id", airlineHandler.AirlineAuthenticate, airlineHandler.UpdateAirline)
 
 		// airline login
 		airline.POST("/login", airlineHandler.AirlineLogin)
@@ -47,12 +47,12 @@ func NewAirlineRoutes(c *gin.Engine, cfg config.Configure) {
 		// airline forgot password
 		airline.POST("/forgot", airlineHandler.ForgotPassword)
 		airline.POST("/forgot/verify", airlineHandler.VerifyAirline)
-		airline.POST("/forgot/verify/reset", airlineHandler.authenticate, airlineHandler.ResetPassword)
+		airline.POST("/forgot/verify/reset", airlineHandler.AirlineAuthenticate, airlineHandler.ResetPassword)
 
 		// Seats routes
 		seats := airline.Group("/:airline_id/seats")
 		{
-			seats.POST("", airlineHandler.authenticate, airlineHandler.CreateAirlineSeat)
+			seats.POST("", airlineHandler.AirlineAuthenticate, airlineHandler.CreateAirlineSeat)
 			// 	seats.PUT("/:seat_id", airlineHandler.UpdateSeat)
 			// 	seats.GET("", airlineHandler.GetSeats)
 			// 	seats.DELETE("/:seat_id", airlineHandler.DeleteSeat)
@@ -61,7 +61,7 @@ func NewAirlineRoutes(c *gin.Engine, cfg config.Configure) {
 		// Baggage Policies routes
 		baggagePolicies := airline.Group("/:airline_id/baggage-policies")
 		{
-			baggagePolicies.POST("", airlineHandler.authenticate, airlineHandler.CreateAirlineBaggagePolicy)
+			baggagePolicies.POST("", airlineHandler.AirlineAuthenticate, airlineHandler.CreateAirlineBaggagePolicy)
 			// 	baggagePolicies.PUT("/:policy_id", airlineHandler.UpdateBaggagePolicy)
 			// 	baggagePolicies.DELETE("/:policy_id", airlineHandler.DeleteBaggagePolicy)
 			// 	baggagePolicies.GET("", airlineHandler.GetBaggagePolicies)
@@ -70,7 +70,7 @@ func NewAirlineRoutes(c *gin.Engine, cfg config.Configure) {
 		// Cancellation Policies routes
 		cancellationPolicies := airline.Group("/:airline_id/cancellation-policies")
 		{
-			cancellationPolicies.POST("", airlineHandler.authenticate, airlineHandler.CreateAirlineCancellationPolicy)
+			cancellationPolicies.POST("", airlineHandler.AirlineAuthenticate, airlineHandler.CreateAirlineCancellationPolicy)
 			// 	cancellationPolicies.PUT("/:policy_id", airlineHandler.UpdateCancellationPolicy)
 			// 	cancellationPolicies.DELETE("/:policy_id", airlineHandler.DeleteCancellationPolicy)
 			// 	cancellationPolicies.GET("", airlineHandler.GetCancellationPolicies)
@@ -100,8 +100,8 @@ func NewAirlineRoutes(c *gin.Engine, cfg config.Configure) {
 	}
 }
 
-func (a *Airline) authenticate(ctx *gin.Context) {
-	email, err := middleware.ValidateToken(ctx, *a.cfg, "admin")
+func (a *Airline) AirlineAuthenticate(ctx *gin.Context) {
+	email, err := middleware.ValidateToken(ctx, *a.cfg, "airline")
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"error":  err.Error(),
@@ -118,7 +118,7 @@ func (a *Airline) RegisterAirline(ctx *gin.Context) {
 }
 
 func (a *Airline) VerifyRegistration(ctx *gin.Context) {
-	handler.RegisterAirline(ctx, a.client)
+	handler.VerifyRegistration(ctx, a.client)
 }
 
 func (a *Airline) UpdateAirline(ctx *gin.Context) {

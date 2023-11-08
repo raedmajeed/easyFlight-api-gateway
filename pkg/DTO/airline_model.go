@@ -12,12 +12,22 @@ const (
 
 type FlightTypeRequest struct {
 	Type                FlightType `json:"type" validate:"max=2,required"`
-	FlightModel         string     `json:"flight_model" validate:"max=5,required,alphanumunicode,upper"`
+	FlightModel         string     `json:"flight_model" validate:"max=5,required,alphanumunicode,uppercase"`
 	Description         string     `json:"description" validate:"max=150,required"`
-	ManufacturerName    string     `json:"maunufacturer_name" validate:"max=150,required,alpha"`
-	ManufacturerCountry string     `json:"manufacturer_country" validate:"max=150,required,alpha"`
+	ManufacturerName    string     `json:"maunufacturer_name" validate:"max=150,required,alphaspace"`
+	ManufacturerCountry string     `json:"manufacturer_country" validate:"max=150,required,alphaspace"`
 	MaxDistance         int32      `json:"max_distance" validate:"max=1500,required,numeric"`
 	CruiseSpeed         int32      `json:"cruise_speed" validate:"max=1500,required,numeric"`
+}
+
+type FlightTypeUpdateRequest struct {
+	Type                FlightType `json:"type" validate:"omitempty,max=2"`
+	FlightModel         string     `json:"flight_model" validate:"omitempty,max=5,alphanumunicode,uppercase"`
+	Description         string     `json:"description" validate:"omitempty,max=150"`
+	ManufacturerName    string     `json:"maunufacturer_name" validate:"omitempty,max=150,alphaspace"`
+	ManufacturerCountry string     `json:"manufacturer_country" validate:"omitempty,max=150,alphaspace"`
+	MaxDistance         int32      `json:"max_distance" validate:"omitempty,max=1500,numeric"`
+	CruiseSpeed         int32      `json:"cruise_speed" validate:"omitempty,max=1500,numeric"`
 }
 
 //* AIRLINE COMPANY
@@ -25,9 +35,9 @@ type FlightTypeRequest struct {
 type AirlineCompanyRequest struct {
 	AirlineName         string `json:"name" validate:"required"`
 	CompanyAddress      string `json:"company_address" validate:"max=100,required"`
-	PhoneNumber         string `json:"phone_number" validate:"phone,required"`
-	Email               string `json:"email" validate:"email,required"`
-	AirlineCode         string `json:"airline_code" validate:"max=5,required,alphanumeric,upper"`
+	PhoneNumber         string `json:"phone_number" validate:"required,min=0,phone"`
+	Email               string `json:"email" validate:"emailcst,required"`
+	AirlineCode         string `json:"airline_code" validate:"max=5,required,alphanumunicode,uppercase"`
 	AirlineLogoLink     string `json:"airline_logo_link" validate:"url,required"`
 	SupportDocumentLink string `json:"support_documents_link" validate:"url,required"`
 }
@@ -43,13 +53,6 @@ type AirlineSeatRequest struct {
 }
 
 //* AIRLINE BAGGAGE
-
-type Class int
-
-const (
-	Economy Class = iota
-	Buisiness
-)
 
 type AirlineBaggageRequest struct {
 	AirlineId           int    `json:"airline_id" validate:"required,number"`

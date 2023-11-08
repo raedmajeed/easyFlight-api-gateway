@@ -11,18 +11,16 @@ import (
 	"github.com/go-playground/validator/v10"
 	dto "github.com/raedmajeed/api-gateway/pkg/DTO"
 	pb "github.com/raedmajeed/api-gateway/pkg/admin/pb"
+	"github.com/raedmajeed/api-gateway/utitlity"
 )
 
 func RegisterAirline(ctx *gin.Context, client pb.AdminAirlineClient) {
-	body := ctx.Request.Body
-	defer body.Close()
-
 	timeout := time.Second * 1000
 	cont, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
 
 	var req dto.AirlineCompanyRequest
-	if err := ctx.ShouldBindJSON(&req); err != nil {
+	if err := ctx.BindJSON(&req); err != nil {
 		log.Printf("error binding JSON")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
@@ -32,7 +30,11 @@ func RegisterAirline(ctx *gin.Context, client pb.AdminAirlineClient) {
 	}
 
 	//? Validating struct
-	if err := validator.New().Struct(req); err != nil {
+	validate := validator.New(validator.WithRequiredStructEnabled())
+	validate.RegisterValidation("emailcst", utitlity.EmailValidation)
+	validate.RegisterValidation("phone", utitlity.PhoneNumberValidation)
+	err := validate.Struct(req)
+	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 		})
@@ -100,7 +102,7 @@ func VerifyRegistration(ctx *gin.Context, client pb.AdminAirlineClient) {
 		return
 	}
 
-	response, err := client.VerifyAirline(cont, &pb.OTPRequest{
+	response, err := client.VerifyAirlineRegistration(cont, &pb.OTPRequest{
 		Otp:   int32(req.Otp),
 		Email: req.Email,
 	})
@@ -116,7 +118,7 @@ func VerifyRegistration(ctx *gin.Context, client pb.AdminAirlineClient) {
 
 	ctx.JSON(http.StatusCreated, gin.H{
 		"status":  http.StatusAccepted,
-		"message": "OTP verified, Airline Creation succesful",
+		"message": "OTP verified, Airline Creation succesful. Will be sending the login credentials once verification is completed",
 		"data":    response,
 	})
 }

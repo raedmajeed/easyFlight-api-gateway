@@ -11,6 +11,8 @@ import (
 	"github.com/go-playground/validator/v10"
 	dto "github.com/raedmajeed/api-gateway/pkg/DTO"
 	pb "github.com/raedmajeed/api-gateway/pkg/admin/pb"
+	"github.com/raedmajeed/api-gateway/utitlity"
+	"google.golang.org/grpc/metadata"
 )
 
 // * Login Request
@@ -25,7 +27,9 @@ func Login(ctx *gin.Context, client pb.AdminAirlineClient, role string) {
 		return
 	}
 
-	if err := validator.New().Struct(req); err != nil {
+	validate := validator.New(validator.WithRequiredStructEnabled())
+	validate.RegisterValidation("emailcst", utitlity.EmailValidation)
+	if err := validate.Struct(req); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 		})
@@ -175,6 +179,8 @@ func ConfirmPasswordReq(ctx *gin.Context, client pb.AdminAirlineClient) {
 		return
 	}
 
+	validate := validator.New(validator.WithRequiredStructEnabled())
+	validate.VarWithValue(req.ConfirmPassword, req.Password, "eqfield")
 	if err := validator.New().Struct(req); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
@@ -192,7 +198,17 @@ func ConfirmPasswordReq(ctx *gin.Context, client pb.AdminAirlineClient) {
 	cont, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
 
-	response, err := client.RegisterConfirmPasswordRequest(cont, &pb.ConfirmPasswordRequest{
+	email, check := ctx.Get("registered_email")
+	if !check {
+		log.Println("unable to get value from context")
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"error": fmt.Sprintln("unable to get value from context"),
+		})
+	}
+
+	emailz := fmt.Sprintf("%v", email)
+	newCont := metadata.NewOutgoingContext(cont, metadata.Pairs("registered_email", emailz))
+	response, err := client.RegisterConfirmPasswordRequest(newCont, &pb.ConfirmPasswordRequest{
 		Password:        req.Password,
 		ConfirmPassword: req.ConfirmPassword,
 	})

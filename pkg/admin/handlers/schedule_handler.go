@@ -11,6 +11,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	dto "github.com/raedmajeed/api-gateway/pkg/DTO"
 	pb "github.com/raedmajeed/api-gateway/pkg/admin/pb"
+	"github.com/raedmajeed/api-gateway/utitlity"
 )
 
 func CreateSchedule(ctx *gin.Context, client pb.AdminAirlineClient) {
@@ -28,7 +29,11 @@ func CreateSchedule(ctx *gin.Context, client pb.AdminAirlineClient) {
 		return
 	}
 	//? Validating struct
-	if err := validator.New().Struct(req); err != nil {
+	validate := validator.New(validator.WithRequiredStructEnabled())
+	validate.RegisterValidation("date", utitlity.Date)
+	validate.RegisterValidation("time", utitlity.Time)
+
+	if err := validate.Struct(req); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 		})
@@ -44,8 +49,10 @@ func CreateSchedule(ctx *gin.Context, client pb.AdminAirlineClient) {
 	response, err := client.RegisterScheduleRequest(cont, &pb.ScheduleRequest{
 		DepartureTime:    req.DepartureTime,
 		ArrivalTime:      req.ArrivalTime,
-		DepartureAirport: req.DepartureAirport,
-		ArrivalAirport:   req.ArrivalAirport,
+		DepartureAirport: req.DepartureAirportCode,
+		ArrivalAirport:   req.ArrivalAirportCode,
+		DepartureDate:    req.DepartureDate,
+		ArrivalDate:      req.ArrivalDate,
 	})
 
 	if err != nil {

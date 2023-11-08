@@ -11,14 +11,15 @@ import (
 	"github.com/go-playground/validator/v10"
 	dto "github.com/raedmajeed/api-gateway/pkg/DTO"
 	pb "github.com/raedmajeed/api-gateway/pkg/admin/pb"
+	"github.com/raedmajeed/api-gateway/utitlity"
 	"google.golang.org/grpc/metadata"
 )
 
 func RegisterFlightType(ctx *gin.Context, client pb.AdminAirlineClient) {
 	ft := &dto.FlightTypeRequest{}
-	// timeout := time.Second * 1000
-	// cont, cancel := context.WithTimeout(ctx, timeout)
-	// defer cancel()
+	timeout := time.Second * 1000
+	cont, cancel := context.WithTimeout(ctx, timeout)
+	defer cancel()
 
 	if err := ctx.BindJSON(ft); err != nil {
 		log.Printf("Error parsing JSON request: %v", err)
@@ -30,7 +31,9 @@ func RegisterFlightType(ctx *gin.Context, client pb.AdminAirlineClient) {
 	}
 
 	//? Validating struct
-	if err := validator.New().Struct(ft); err != nil {
+	validate := validator.New(validator.WithRequiredStructEnabled())
+	validate.RegisterValidation("alphaspace", utitlity.AlphaSpace)
+	if err := validate.Struct(ft); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 		})
@@ -43,30 +46,30 @@ func RegisterFlightType(ctx *gin.Context, client pb.AdminAirlineClient) {
 		return
 	}
 
-	// response, err := client.RegisterFlightType(cont, &pb.FlightTypeRequest{
-	// 	Type:                pb.FlightTypeEnum(ft.Type),
-	// 	FlightModel:         ft.FlightModel,
-	// 	Description:         ft.Description,
-	// 	ManufacturerName:    ft.ManufacturerName,
-	// 	ManufacturerCountry: ft.ManufacturerCountry,
-	// 	MaxDistance:         ft.MaxDistance,
-	// 	CruiseSpeed:         ft.CruiseSpeed,
-	// })
+	response, err := client.RegisterFlightType(cont, &pb.FlightTypeRequest{
+		Type:                pb.FlightTypeEnum(ft.Type),
+		FlightModel:         ft.FlightModel,
+		Description:         ft.Description,
+		ManufacturerName:    ft.ManufacturerName,
+		ManufacturerCountry: ft.ManufacturerCountry,
+		MaxDistance:         ft.MaxDistance,
+		CruiseSpeed:         ft.CruiseSpeed,
+	})
 
-	// if err != nil {
-	// 	log.Printf("error Calling method, err: %v", err.Error())
-	// 	ctx.AbortWithStatusJSON(http.StatusBadGateway, gin.H{
-	// 		"status": http.StatusBadGateway,
-	// 		"error":  "gRPC call failed",
-	// 	})
-	// 	return
-	// }
+	if err != nil {
+		log.Printf("error Calling method, err: %v", err.Error())
+		ctx.AbortWithStatusJSON(http.StatusBadGateway, gin.H{
+			"status": http.StatusBadGateway,
+			"error":  err.Error(),
+		})
+		return
+	}
 
-	// ctx.JSON(http.StatusOK, gin.H{
-	// 	"status":  http.StatusOK,
-	// 	"message": fmt.Sprintf("Flight type of id %s is created successfuly", response.FlightType.FlightModel),
-	// 	"data":    response,
-	// })
+	ctx.JSON(http.StatusOK, gin.H{
+		"status":  http.StatusOK,
+		"message": fmt.Sprintf("Flight type of id %s is created successfuly", response.FlightType.FlightModel),
+		"data":    response,
+	})
 }
 
 func GetFlightTypes(ctx *gin.Context, client pb.AdminAirlineClient) {
@@ -80,7 +83,7 @@ func GetFlightTypes(ctx *gin.Context, client pb.AdminAirlineClient) {
 		log.Printf("error Calling method, err: %v", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadGateway, gin.H{
 			"status": http.StatusBadGateway,
-			"error":  "gRPC call failed",
+			"error":  err.Error(),
 		})
 		return
 	}
@@ -99,13 +102,15 @@ func GetFlightType(ctx *gin.Context, client pb.AdminAirlineClient) {
 	cont, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
 
-	response, err := client.FetchFlightType(cont, &pb.IDRequest{})
+	id := ctx.Param("flight_type_id")
+	newCont := metadata.NewOutgoingContext(cont, metadata.Pairs("id", id))
+	response, err := client.FetchFlightType(newCont, &pb.IDRequest{})
 
 	if err != nil {
 		log.Printf("error Calling method, err: %v", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadGateway, gin.H{
 			"status": http.StatusBadGateway,
-			"error":  "gRPC call failed",
+			"error":  err.Error(),
 		})
 		return
 	}
@@ -118,16 +123,8 @@ func GetFlightType(ctx *gin.Context, client pb.AdminAirlineClient) {
 }
 
 func UpdateFlightType(ctx *gin.Context, client pb.AdminAirlineClient) {
-	ft := dto.FlightTypeRequest{}
+	ft := dto.FlightTypeUpdateRequest{}
 	flightTypeID := ctx.Param("flight_type_id")
-	if flightTypeID == "" {
-		log.Println("No flight_type_id exists in url")
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  "No flight_type_id exists in url",
-		})
-		return
-	}
 
 	timeout := time.Second * 1000
 	cont, cancel := context.WithTimeout(ctx, timeout)
@@ -137,13 +134,16 @@ func UpdateFlightType(ctx *gin.Context, client pb.AdminAirlineClient) {
 		log.Printf("Error parsing JSON request: %v", err)
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
-			"error":  "Error parsing JSON request",
+			"error":  err.Error(),
 		})
 		return
 	}
 
 	//? Validating struct
-	if err := validator.New().Struct(ft); err != nil {
+	validate := validator.New(validator.WithRequiredStructEnabled())
+	validate.RegisterValidation("alphaspace", utitlity.AlphaSpace)
+
+	if err := validate.Struct(ft); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 		})
@@ -171,7 +171,7 @@ func UpdateFlightType(ctx *gin.Context, client pb.AdminAirlineClient) {
 		log.Printf("error Calling method, err: %v", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadGateway, gin.H{
 			"status": http.StatusBadGateway,
-			"error":  "gRPC call failed",
+			"error":  err.Error(),
 		})
 		return
 	}
@@ -184,34 +184,26 @@ func UpdateFlightType(ctx *gin.Context, client pb.AdminAirlineClient) {
 }
 
 func DeleteFlightType(ctx *gin.Context, client pb.AdminAirlineClient) {
-	flightTypeID := ctx.Param("flight_type_id")
-	if flightTypeID == "" {
-		log.Println("No flight_type_id exists in url")
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  "No flight_type_id exists in url",
-		})
-		return
-	}
-
 	timeout := time.Second * 1000
 	cont, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
 
-	response, err := client.DeleteFlightType(cont, &pb.IDRequest{})
+	id := ctx.Param("flight_type_id")
+	newCont := metadata.NewOutgoingContext(cont, metadata.Pairs("flight_type_id", id))
+	response, err := client.DeleteFlightType(newCont, &pb.IDRequest{})
 
 	if err != nil {
 		log.Printf("error Calling method, err: %v", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadGateway, gin.H{
 			"status": http.StatusBadGateway,
-			"error":  "gRPC call failed",
+			"error":  err.Error(),
 		})
 		return
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"status":  http.StatusOK,
-		"message": fmt.Sprintf("Flight type of id %s is deleted successfuly", flightTypeID),
+		"message": fmt.Sprintf("Flight type of id %s is deleted successfuly", id),
 		"data": gin.H{
 			"flightType": response.GetFlightType(),
 		},

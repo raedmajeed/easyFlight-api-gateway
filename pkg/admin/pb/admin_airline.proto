@@ -2,7 +2,6 @@ syntax = "proto3";
 
 package pb;
 
-import "google/protobuf/timestamp.proto";
 
 option go_package = ".";
 
@@ -15,12 +14,13 @@ service AdminAirline {
   rpc DeleteFlightType(IDRequest) returns (FlightTypeResponse);
 
   // gRPC methods for all actions on Airline
-  rpc RegisterAirline(AirlineRequest) returns (AirlineResponse);
+  rpc RegisterAirline(AirlineRequest) returns (OtpResponse);
   rpc FetchAllAirlines(EmptyRequest) returns (AirlinesResponse);
   rpc FetchAirline(IDRequest) returns (AirlineResponse);
   rpc UpdateAirline(AirlineRequest) returns (AirlineResponse);
   rpc DeleteAirline(IDRequest) returns (AirlineResponse);
-  rpc VerifyAirline(OTPRequest) returns (AirlineResponse);
+  rpc VerifyAirlineRegistration(OTPRequest) returns (AirlineResponse);
+  rpc AdminVerifyAirline(EmptyRequest) returns (AirlineResponse);
 
   // gRPC methods for all actions on Airline Seats
   rpc RegisterAirlineSeat(AirlineSeatRequest) returns (AirlineSeatResponse);
@@ -69,7 +69,7 @@ message EmailResponse {
 
 message OtpResponse {
   string email = 1;
-  google.protobuf.Timestamp expiration_time = 2;
+  string expiration_time = 2;
 }
 
 message IDRequest {
@@ -93,7 +93,7 @@ message ConfirmPasswordRequest {
 }
 
 message ForgotPasswordRequest {
-  string email =1 ;
+  string email = 1;
 }
 
 message LoginResponse {
@@ -272,6 +272,8 @@ message ScheduleRequest {
   string arrival_time = 2;
   string departure_airport = 3;
   string arrival_airport = 4;
+  string departure_date = 5;
+  string arrival_date = 6;
 }
 
 message ScheduleResponse {

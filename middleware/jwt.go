@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"time"
 
@@ -11,8 +12,8 @@ import (
 )
 
 type Claims struct {
-	email string
-	role  string
+	Email string
+	Role  string
 	jwt.StandardClaims
 }
 
@@ -23,22 +24,23 @@ type JwtClaims struct {
 func ValidateToken(ctx *gin.Context, cfg config.Configure, role string) (string, error) {
 	headerToken := ctx.GetHeader("Authorization")
 	if headerToken == "" {
-		log.Print("Header token missing")
-		return "", errors.New("header token missing")
+		log.Print("bearer token missing")
+		return "", errors.New("bearer token missing")
 	}
 
 	claims := &Claims{}
-	token := string([]byte(headerToken)[:7])
+	token := string([]byte(headerToken)[7:])
+	fmt.Println(cfg.SECRETKEY)
 	parserToken, err := jwt.ParseWithClaims(token, claims, func(t *jwt.Token) (interface{}, error) {
 		return []byte(cfg.SECRETKEY), nil
 	})
 
 	if err != nil {
-		log.Printf("Error parsing token: %v", err)
+		log.Printf("error parsing token: %v", err)
 		return "", errors.New("error parsing token")
 	}
 	if !parserToken.Valid {
-		log.Print("Invalid token")
+		log.Print("invalid token")
 		return "", errors.New("token invalid")
 	}
 
@@ -48,10 +50,12 @@ func ValidateToken(ctx *gin.Context, cfg config.Configure, role string) (string,
 		return "", errors.New("token expired")
 	}
 
-	userRole := claims.role
+	fmt.Println(claims)
+	userRole := claims.Role
+	fmt.Println(role)
 	if userRole != role {
-		log.Println("Unauthorized user")
+		log.Println("unauthorized user")
 		return "", errors.New("unauthorized user")
 	}
-	return claims.email, nil
+	return claims.Email, nil
 }

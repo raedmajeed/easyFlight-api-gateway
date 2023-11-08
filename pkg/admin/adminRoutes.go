@@ -45,28 +45,29 @@ func NewAdminRoutes(c *gin.Engine, cfg config.Configure) {
 			admin.POST("/login", adminHandler.AdminLogin)
 
 			//* Flight Types routes
-			admin.POST("/flight-types", adminHandler.Authenticate, adminHandler.RegisterFlightType)
-			admin.GET("/flight-types", adminHandler.Authenticate, adminHandler.GetFlightTypes)
-			admin.GET("/flight-types/:flight_type_id", adminHandler.Authenticate, adminHandler.GetFlightType)
-			admin.PUT("/flight-types/:flight_type_id", adminHandler.Authenticate, adminHandler.UpdateFlightType)
-			admin.DELETE("/flight-types/:flight_type_id", adminHandler.Authenticate, adminHandler.DeleteFlightType)
+			admin.POST("/flight-types", adminHandler.AdminAuthenticate, adminHandler.RegisterFlightType)
+			admin.GET("/flight-types", adminHandler.AdminAuthenticate, adminHandler.GetFlightTypes)
+			admin.GET("/flight-types/:flight_type_id", adminHandler.AdminAuthenticate, adminHandler.GetFlightType)
+			admin.PUT("/flight-types/:flight_type_id", adminHandler.AdminAuthenticate, adminHandler.UpdateFlightType)
+			admin.DELETE("/flight-types/:flight_type_id", adminHandler.AdminAuthenticate, adminHandler.DeleteFlightType)
 
 			//* Verify Airline
-			// admin.POST("/verify-airline/:airline_id", adminHandler.VerifyAirline)
+			admin.PATCH("/verify-airline/:airline_id", adminHandler.AdminAuthenticate, adminHandler.VerifyAirline)
+			//! block airline here
 
 			//* Airlines routes
 			// admin.GET("/airlines/accepted", adminHandler.GetAcceptedAirlines)
 			// admin.GET("/airlines/rejected", adminHandler.GetRejectedAirlines)
 
 			//* Airports routes
-			admin.POST("/airports", adminHandler.CreateAirport)
+			admin.POST("/airports", adminHandler.AdminAuthenticate, adminHandler.CreateAirport)
 			// admin.PUT("/airports/:airport_id", adminHandler.UpdateAirport)
 			// admin.DELETE("/airports/:airport_id", adminHandler.DeleteAirport)
 			// admin.GET("/airports/:airport_id", adminHandler.GetAirport)
 			// admin.GET("/airports", adminHandler.GetAirports)
 
 			//* Schedules routes
-			admin.POST("/schedules", adminHandler.CreateSchedule)
+			admin.POST("/schedules", adminHandler.AdminAuthenticate, adminHandler.CreateSchedule)
 			// admin.PUT("/schedules/:schedule_id", adminHandler.UpdateSchedule)
 			// admin.DELETE("/schedules/:schedule_id", adminHandler.DeleteSchedule)
 			// admin.GET("/schedules/:schedule_id", adminHandler.GetSchedule)
@@ -83,7 +84,7 @@ func NewAdminRoutes(c *gin.Engine, cfg config.Configure) {
 	}
 }
 
-func (a *Admin) Authenticate(ctx *gin.Context) {
+func (a *Admin) AdminAuthenticate(ctx *gin.Context) {
 	email, err := middleware.ValidateToken(ctx, *a.cfg, "admin")
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
@@ -116,9 +117,9 @@ func (a *Admin) DeleteFlightType(ctx *gin.Context) {
 	handler.DeleteFlightType(ctx, a.client)
 }
 
-// func (a *Admin) VerifyAirline(ctx *gin.Context) {
-// 	handler.VerifyAirline(ctx, a.client)
-// }
+func (a *Admin) VerifyAirline(ctx *gin.Context) {
+	handler.VerifyAirline(ctx, a.client)
+}
 
 // func (a *Admin) GetAirline(ctx *gin.Context) {
 // 	handler.GetAirline(ctx, a.client)

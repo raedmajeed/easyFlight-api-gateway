@@ -11,6 +11,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	dto "github.com/raedmajeed/api-gateway/pkg/DTO"
 	pb "github.com/raedmajeed/api-gateway/pkg/admin/pb"
+	"github.com/raedmajeed/api-gateway/utitlity"
 )
 
 func CreateAirport(ctx *gin.Context, client pb.AdminAirlineClient) {
@@ -28,7 +29,12 @@ func CreateAirport(ctx *gin.Context, client pb.AdminAirlineClient) {
 		return
 	}
 	//? Validating struct
-	if err := validator.New().Struct(req); err != nil {
+	validate := validator.New(validator.WithRequiredStructEnabled())
+	validate.RegisterValidation("alphaspace", utitlity.AlphaSpace)
+	validate.RegisterValidation("emailcst", utitlity.EmailValidation)
+	validate.RegisterValidation("phone", utitlity.PhoneNumberValidation)
+
+	if err := validate.Struct(req); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 		})
