@@ -77,9 +77,9 @@ func NewAirlineRoutes(c *gin.Engine, cfg config.Configure) {
 		}
 
 		// Fleet routes
-		// fleet := airline.Group("/:airline_id/fleet")
+		fleet := airline.Group("/fleet")
 		// {
-		// 	fleet.GET("", airlineHandler.GetFleetList)
+		fleet.POST("", airlineHandler.AirlineAuthenticate, airlineHandler.AddFleetList)
 		// 	fleet.PUT("/:fleet_id", airlineHandler.UpdateFleet)
 		// 	fleet.DELETE("/:fleet_id", airlineHandler.DeleteFleet)
 		// 	fleet.GET("/flights", airlineHandler.GetFleetFlights)
@@ -87,9 +87,9 @@ func NewAirlineRoutes(c *gin.Engine, cfg config.Configure) {
 		// }
 
 		// Flight Charts routes
-		// flightCharts := airline.Group("/:airline_id/flight-charts")
+		flightCharts := airline.Group("/flight-charts")
 		// {
-		// 	flightCharts.POST("", airlineHandler.CreateFlightChart)
+		flightCharts.POST("", airlineHandler.AirlineAuthenticate, airlineHandler.CreateFlightChart)
 		// 	flightCharts.PATCH("/:chart_id/status", airlineHandler.UpdateFlightChartStatus)
 		// 	flightCharts.DELETE("/:chart_id", airlineHandler.DeleteFlightChart)
 		// 	flightCharts.GET("", airlineHandler.GetFlightCharts)
@@ -151,4 +151,12 @@ func (a *Airline) VerifyAirline(ctx *gin.Context) {
 
 func (a *Airline) ResetPassword(ctx *gin.Context) {
 	handler.ConfirmPasswordReq(ctx, a.client)
+}
+
+func (a *Airline) AddFleetList(ctx *gin.Context) {
+	handler.AddFleetList(ctx, a.client)
+}
+
+func (a *Airline) CreateFlightChart(ctx *gin.Context) {
+	handler.CreateFlightChart(ctx, a.client)
 }

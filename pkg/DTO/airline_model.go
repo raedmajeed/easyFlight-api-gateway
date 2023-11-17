@@ -83,9 +83,8 @@ type AirlineCancellationRequest struct {
 //* FLIGHT FLEET
 
 type FlightFleetRequest struct {
-	SeatId             int `json:"seat_id" validate:"required,foreign_key:seats"`
-	FlightType         int `json:"flight_type" validate:"required,foreign_key:flight_types"`
-	BaggagePolicy      int `json:"baggage_policy" validate:"required,foreign_key:baggage_policies"`
-	CancellationPolicy int `json:"cancellation_policy" validate:"required,foreign_key:cancellation_policies"`
-	FlightCount        int `json:"flight_count" validate:"numeric"`
+	SeatId               int `json:"seat_id" validate:"required,numeric,min=0"`
+	FlightTypeId         int `json:"flight_type" validate:"required,numeric,min=0"`
+	BaggagePolicyId      int `json:"baggage_policy" validate:"required,numeric,min=0"`
+	CancellationPolicyId int `json:"cancellation_policy" validate:"required,numeric,min=0"`
 }

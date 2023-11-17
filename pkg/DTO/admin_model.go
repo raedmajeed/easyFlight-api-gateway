@@ -27,3 +27,10 @@ type ScheduleRequest struct {
 	DepartureAirportCode string `json:"departure_airport_code" validate:"max=5,required,uppercase"`
 	ArrivalAirportCode   string `json:"arrival_airport_code" validate:"max=5,required,uppercase"`
 }
+
+//* FLIGHT CHART REQUEST
+
+type FlightChart struct {
+	FlightFleetID int `json:"flight_fleet_id" validate:"required,numeric,min=0"`
+	ScheduleID    int `json:"schedule_id" validate:"required,numeric,min=0"`
+}

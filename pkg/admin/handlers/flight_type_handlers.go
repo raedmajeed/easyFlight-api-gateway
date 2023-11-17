@@ -98,9 +98,34 @@ func GetFlightTypes(ctx *gin.Context, client pb.AdminAirlineClient) {
 func GetFlightType(ctx *gin.Context, client pb.AdminAirlineClient) {
 	flightTypeID := ctx.Param("flight_type_id")
 
-	timeout := time.Second * 1000
-	cont, cancel := context.WithTimeout(ctx, timeout)
+	// timeout := time.Second * 2000
+	cont, cancel := context.WithCancel(ctx)
 	defer cancel()
+
+	// go func() {
+	// 	for {
+	// 		select {
+	// 		case <-ctx.Done():
+	// 			fmt.Println("terminating ========")
+	// 			cancel()
+	// 			return
+	// 		}
+	// 	}
+	// }()
+
+	// go func(ctx *gin.Context) {
+	// 	for {
+	// 		select {
+	// 		case <-ctx.Done():
+	// 			fmt.Println("terminating context")
+	// 			ctx.AbortWithStatusJSON(http.StatusBadGateway, gin.H{
+	// 				"status": http.StatusBadGateway,
+	// 				"error":  errors.New("umbi"),
+	// 			})
+	// 			return
+	// 		}
+	// 	}
+	// }(ctx)
 
 	id := ctx.Param("flight_type_id")
 	newCont := metadata.NewOutgoingContext(cont, metadata.Pairs("id", id))
@@ -114,6 +139,8 @@ func GetFlightType(ctx *gin.Context, client pb.AdminAirlineClient) {
 		})
 		return
 	}
+
+	fmt.Println("here+++++==========")
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"status":  http.StatusOK,

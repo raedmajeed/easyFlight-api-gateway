@@ -15,7 +15,6 @@ import (
 	"google.golang.org/grpc/metadata"
 )
 
-// * Login Request
 func Login(ctx *gin.Context, client pb.AdminAirlineClient, role string) {
 	var req dto.LoginRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -28,7 +27,10 @@ func Login(ctx *gin.Context, client pb.AdminAirlineClient, role string) {
 	}
 
 	validate := validator.New(validator.WithRequiredStructEnabled())
-	validate.RegisterValidation("emailcst", utitlity.EmailValidation)
+	err := validate.RegisterValidation("emailcst", utitlity.EmailValidation)
+	if err != nil {
+		return
+	}
 	if err := validate.Struct(req); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
@@ -68,7 +70,7 @@ func Login(ctx *gin.Context, client pb.AdminAirlineClient, role string) {
 	})
 }
 
-// * Forgot Password Request
+// ForgotPasswordRequest
 func ForgotPasswordRequest(ctx *gin.Context, client pb.AdminAirlineClient) {
 	var req dto.ForgotPasswordRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
