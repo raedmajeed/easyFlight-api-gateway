@@ -28,7 +28,11 @@ func NewBookingRoutes(ctx *gin.Engine, cfg config.Configure) {
 
 	apiVersion := ctx.Group("/api/v1")
 	{
-		apiVersion.GET("/search", bookingServer.SearchFlight)
+		flights := apiVersion.Group("/flights")
+		{
+			flights.GET("/search", bookingServer.SearchFlight)
+		}
+
 	}
 }
 

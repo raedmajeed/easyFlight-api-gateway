@@ -32,7 +32,6 @@ func RegisterFlightType(ctx *gin.Context, client pb.AdminAirlineClient) {
 
 	//? Validating struct
 	validate := validator.New(validator.WithRequiredStructEnabled())
-	validate.RegisterValidation("alphaspace", utitlity.AlphaSpace)
 	if err := validate.Struct(ft); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
@@ -47,7 +46,7 @@ func RegisterFlightType(ctx *gin.Context, client pb.AdminAirlineClient) {
 	}
 
 	response, err := client.RegisterFlightType(cont, &pb.FlightTypeRequest{
-		Type:                pb.FlightTypeEnum(ft.Type),
+		Type:                pb.FlightTypeEnum(ft.Type - 1),
 		FlightModel:         ft.FlightModel,
 		Description:         ft.Description,
 		ManufacturerName:    ft.ManufacturerName,

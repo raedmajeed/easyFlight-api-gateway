@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -21,6 +22,17 @@ func CreateAirlineCancellationPolicy(ctx *gin.Context, client pb.AdminAirlineCli
 	timeout := time.Second * 1000
 	cont, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
+
+	airlineEmail, ok := ctx.Get("registered_email")
+	if !ok {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  errors.New("error getting value from context"),
+		})
+		return
+	}
+
+	airlineEmails := fmt.Sprintf("%v", airlineEmail)
 
 	var req dto.AirlineCancellationRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -50,10 +62,11 @@ func CreateAirlineCancellationPolicy(ctx *gin.Context, client pb.AdminAirlineCli
 	newCont := metadata.NewOutgoingContext(cont, metadata.Pairs("airline_id", airline_id))
 
 	response, err := client.RegisterAirlineCancellation(newCont, &pb.AirlineCancellationRequest{
-		Class:                           pb.Class(req.FareClass), // Convert to the protobuf enum
+		Class:                           pb.Class(req.FareClass - 1), // Convert to the protobuf enum
 		CancellationDeadlineBeforeHours: uint32(req.CancellationDeadlineBefore),
 		CancellationPercentage:          int32(req.CancellationPercentage),
 		Refundable:                      req.Refundable,
+		AirlineEmail:                    airlineEmails,
 	})
 
 	if err != nil {

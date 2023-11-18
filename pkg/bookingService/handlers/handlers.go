@@ -7,16 +7,14 @@ import (
 	pb "github.com/raedmajeed/api-gateway/pkg/bookingService/pb"
 	"log"
 	"net/http"
-	"strconv"
 	"time"
 )
 
 func SearchFlight(ctx *gin.Context, client pb.BookingClient) {
-	newContext, cancel := context.WithTimeout(ctx, time.Second*1000)
+	newContext, cancel := context.WithTimeout(ctx, time.Second*2000)
 	defer cancel()
 
 	classType := ctx.Query("type")
-	classTypeInt, _ := strconv.Atoi(classType)
 	adults := ctx.Query("adults")
 	children := ctx.Query("children")
 	fromAirport := ctx.Query("fromAirport")
@@ -24,9 +22,10 @@ func SearchFlight(ctx *gin.Context, client pb.BookingClient) {
 	departDate := ctx.Query("departDate")
 	page := ctx.DefaultQuery("page", "1")
 	returnDate := ctx.DefaultQuery("returnDate", "")
+	maxStops := ctx.DefaultQuery("maxStops", "0")
 
 	response, err := client.RegisterSearchFlight(newContext, &pb.SearchFlightRequest{
-		Type:        pb.Type(classTypeInt),
+		Type:        classType,
 		Adults:      adults,
 		Children:    children,
 		FromAirport: fromAirport,
@@ -34,6 +33,7 @@ func SearchFlight(ctx *gin.Context, client pb.BookingClient) {
 		DepartDate:  departDate,
 		ReturnDate:  returnDate,
 		Page:        page,
+		MaxStops:    maxStops,
 	})
 
 	if err != nil {

@@ -11,13 +11,13 @@ const (
 )
 
 type FlightTypeRequest struct {
-	Type                FlightType `json:"type" validate:"max=2,required"`
-	FlightModel         string     `json:"flight_model" validate:"max=5,required,alphanumunicode,uppercase"`
-	Description         string     `json:"description" validate:"max=150,required"`
-	ManufacturerName    string     `json:"maunufacturer_name" validate:"max=150,required,alphaspace"`
-	ManufacturerCountry string     `json:"manufacturer_country" validate:"max=150,required,alphaspace"`
-	MaxDistance         int32      `json:"max_distance" validate:"max=1500,required,numeric"`
-	CruiseSpeed         int32      `json:"cruise_speed" validate:"max=1500,required,numeric"`
+	Type                int    `json:"type" validate:"required"`
+	FlightModel         string `json:"flight_model" validate:"max=5,required,alphanumunicode,uppercase"`
+	Description         string `json:"description" validate:"max=150,required"`
+	ManufacturerName    string `json:"manufacturer_name" validate:"required"`
+	ManufacturerCountry string `json:"manufacturer_country" validate:"max=150,required"`
+	MaxDistance         int32  `json:"max_distance" validate:"max=10000,required,numeric"`
+	CruiseSpeed         int32  `json:"cruise_speed" validate:"max=1500,required,numeric"`
 }
 
 type FlightTypeUpdateRequest struct {
@@ -45,7 +45,7 @@ type AirlineCompanyRequest struct {
 //* AIRLINE SEATS
 
 type AirlineSeatRequest struct {
-	AirlineId           int `json:"airline_id" validate:"required,min=0"`
+	//AirlineId           int `json:"airline_id" validate:"required,min=0"`
 	EconomySeatNumber   int `json:"economy_seat_no" validate:"required,number"`
 	BuisinesSeatNumber  int `json:"buisines_seat_no" validate:"required,number"`
 	EconomySeatsPerRow  int `json:"economy_seats_per_row" validate:"required,number"`
@@ -55,7 +55,7 @@ type AirlineSeatRequest struct {
 //* AIRLINE BAGGAGE
 
 type AirlineBaggageRequest struct {
-	AirlineId           int    `json:"airline_id" validate:"required,number"`
+	//AirlineId           int    `json:"airline_id" validate:"required,number"`
 	FareClass           int    `json:"class" validate:"required"`
 	CabinAllowedWeight  int    `json:"cabin_allowed_weight" validate:"required,numeric"`
 	CabinAllowedLength  int    `json:"cabin_allowed_length" validate:"required,numeric"`
@@ -73,7 +73,7 @@ type AirlineBaggageRequest struct {
 //* AIRLINE CANCELLATION
 
 type AirlineCancellationRequest struct {
-	AirlineId                  int  `json:"airline_id" validate:"required,number"`
+	//AirlineId                  int  `json:"airline_id" validate:"required,number"`
 	FareClass                  int  `json:"class" validate:"required"`
 	CancellationDeadlineBefore int  `json:"cancellation_deadline_before_hours" validate:"required,numeric"`
 	CancellationPercentage     int  `json:"cancellation_percentage" validate:"required"`

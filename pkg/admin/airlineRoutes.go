@@ -50,7 +50,7 @@ func NewAirlineRoutes(c *gin.Engine, cfg config.Configure) {
 		airline.POST("/forgot/verify/reset", airlineHandler.AirlineAuthenticate, airlineHandler.ResetPassword)
 
 		// Seats routes
-		seats := airline.Group("/:airline_id/seats")
+		seats := airline.Group("/seats")
 		{
 			seats.POST("", airlineHandler.AirlineAuthenticate, airlineHandler.CreateAirlineSeat)
 			// 	seats.PUT("/:seat_id", airlineHandler.UpdateSeat)
@@ -59,7 +59,7 @@ func NewAirlineRoutes(c *gin.Engine, cfg config.Configure) {
 		}
 
 		// Baggage Policies routes
-		baggagePolicies := airline.Group("/:airline_id/baggage-policies")
+		baggagePolicies := airline.Group("/baggage-policies")
 		{
 			baggagePolicies.POST("", airlineHandler.AirlineAuthenticate, airlineHandler.CreateAirlineBaggagePolicy)
 			// 	baggagePolicies.PUT("/:policy_id", airlineHandler.UpdateBaggagePolicy)
@@ -68,7 +68,7 @@ func NewAirlineRoutes(c *gin.Engine, cfg config.Configure) {
 		}
 
 		// Cancellation Policies routes
-		cancellationPolicies := airline.Group("/:airline_id/cancellation-policies")
+		cancellationPolicies := airline.Group("/cancellation-policies")
 		{
 			cancellationPolicies.POST("", airlineHandler.AirlineAuthenticate, airlineHandler.CreateAirlineCancellationPolicy)
 			// 	cancellationPolicies.PUT("/:policy_id", airlineHandler.UpdateCancellationPolicy)

@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -18,6 +19,17 @@ func CreateAirlineBaggagePolicy(ctx *gin.Context, client pb.AdminAirlineClient) 
 	timeout := time.Second * 1000
 	cont, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
+
+	airlineEmail, ok := ctx.Get("registered_email")
+	if !ok {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  errors.New("error getting value from context"),
+		})
+		return
+	}
+
+	airlineEmails := fmt.Sprintf("%v", airlineEmail)
 
 	var req dto.AirlineBaggageRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -47,7 +59,7 @@ func CreateAirlineBaggagePolicy(ctx *gin.Context, client pb.AdminAirlineClient) 
 	newCont := metadata.NewOutgoingContext(cont, metadata.Pairs("airline_id", airline_id))
 
 	response, err := client.RegisterAirlineBaggage(newCont, &pb.AirlineBaggageRequest{
-		Class:               pb.Class(req.FareClass),
+		Class:               int32(pb.Class(req.FareClass)),
 		CabinAllowedWeight:  int32(req.CabinAllowedWeight),
 		CabinAllowedLength:  int32(req.CabinAllowedLength),
 		CabinAllowedBreadth: int32(req.CabinAllowedBreadth),
@@ -59,6 +71,7 @@ func CreateAirlineBaggagePolicy(ctx *gin.Context, client pb.AdminAirlineClient) 
 		FeeForExtraKgCabin:  int32(req.FeeExtraPerKGCabin),
 		FeeForExtraKgHand:   int32(req.FeeExtraPerKGHand),
 		Restrictions:        req.Restrictions,
+		AirlineEmail:        airlineEmails,
 	})
 
 	if err != nil {

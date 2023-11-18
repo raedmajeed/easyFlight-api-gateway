@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -21,6 +22,17 @@ func CreateAirlineSeat(ctx *gin.Context, client pb.AdminAirlineClient) {
 	timeout := time.Second * 1000
 	cont, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
+
+	airlineEmail, ok := ctx.Get("registered_email")
+	if !ok {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  errors.New("error getting value from context"),
+		})
+		return
+	}
+
+	airlineEmails := fmt.Sprintf("%v", airlineEmail)
 
 	var req dto.AirlineSeatRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -53,6 +65,7 @@ func CreateAirlineSeat(ctx *gin.Context, client pb.AdminAirlineClient) {
 		BuisinesSeatNo:      int32(req.BuisinesSeatNumber),
 		EconomySeatsPerRow:  int32(req.EconomySeatsPerRow),
 		BuisinesSeatsPerRow: int32(req.BuisinesSeatsPerRow),
+		AirlineEmail:        airlineEmails,
 	})
 
 	if err != nil {
