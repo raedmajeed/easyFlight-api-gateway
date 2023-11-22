@@ -30,7 +30,18 @@ func NewBookingRoutes(ctx *gin.Engine, cfg config.Configure) {
 	{
 		flights := apiVersion.Group("/flights")
 		{
-			flights.GET("/search", bookingServer.SearchFlight)
+			search := flights.Group("/search")
+			{
+				search.GET("", bookingServer.SearchFlight)
+				search.GET("/select", bookingServer.SelectFlight)
+				search.POST("/select/pax", bookingServer.UserAuthenticate, bookingServer.AddTravellers)
+			}
+		}
+		user := apiVersion.Group("/user")
+		{
+			user.POST("/login", bookingServer.UserLogin)
+			user.POST("/register", bookingServer.UserRegister)
+			user.POST("/register/verify", bookingServer.VerifyRegistration2)
 		}
 
 	}
@@ -51,4 +62,22 @@ func (bs *BookingServer) UserAuthenticate(ctx *gin.Context) {
 
 func (bs *BookingServer) SearchFlight(ctx *gin.Context) {
 	handlers.SearchFlight(ctx, bs.pb)
+}
+
+func (bs *BookingServer) SelectFlight(ctx *gin.Context) {
+	handlers.SelectFlight(ctx, bs.pb)
+}
+
+func (bs *BookingServer) AddTravellers(ctx *gin.Context) {
+	handlers.AddTravellers(ctx, bs.pb)
+}
+
+func (bs *BookingServer) UserLogin(ctx *gin.Context) {
+	handlers.UserLogin(ctx, bs.pb)
+}
+func (bs *BookingServer) UserRegister(ctx *gin.Context) {
+	handlers.UserRegister(ctx, bs.pb)
+}
+func (bs *BookingServer) VerifyRegistration2(ctx *gin.Context) {
+	handlers.VerifyRegistration2(ctx, bs.pb)
 }
