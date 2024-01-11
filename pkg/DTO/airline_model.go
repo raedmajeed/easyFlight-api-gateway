@@ -88,3 +88,44 @@ type FlightFleetRequest struct {
 	BaggagePolicyId      int `json:"baggage_policy" validate:"required,numeric,min=0"`
 	CancellationPolicyId int `json:"cancellation_policy" validate:"required,numeric,min=0"`
 }
+
+type FetchAirlineBaggage struct {
+}
+
+type FetchAirlineCancellation struct {
+}
+
+type FetchAirlineSeat struct {
+}
+
+type UpdateAirlineBaggageRequest struct {
+	//AirlineId           int
+	FareClass           int
+	CabinAllowedWeight  int
+	CabinAllowedLength  int
+	CabinAllowedBreadth int
+	CabinAllowedHeight  int
+	HandAllowedWeight   int
+	HandAllowedLength   int
+	HandAllowedBreadth  int
+	HandAllowedHeight   int
+	FeeExtraPerKGCabin  int
+	FeeExtraPerKGHand   int
+	Restrictions        string
+}
+
+type UpdateAirlineCancellationRequest struct {
+	//AirlineId                  int
+	FareClass                  int
+	CancellationDeadlineBefore int
+	CancellationPercentage     int
+	Refundable                 bool
+}
+
+type UpdateAirlineSeatRequest struct {
+	//AirlineId           int
+	EconomySeatNumber   int
+	BuisinesSeatNumber  int
+	EconomySeatsPerRow  int
+	BuisinesSeatsPerRow int
+}

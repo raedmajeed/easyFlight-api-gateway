@@ -16,9 +16,6 @@ import (
 )
 
 func CreateAirlineSeat(ctx *gin.Context, client pb.AdminAirlineClient) {
-	body := ctx.Request.Body
-	defer body.Close()
-
 	timeout := time.Second * 1000
 	cont, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()

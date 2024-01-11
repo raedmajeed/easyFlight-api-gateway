@@ -43,9 +43,9 @@ func NewBookingRoutes(ctx *gin.Engine, cfg config.Configure) {
 			user.POST("/register", bookingServer.UserRegister)
 			user.POST("/register/verify", bookingServer.VerifyRegistration2)
 			user.POST("/bookings/confirm", bookingServer.UserAuthenticate, bookingServer.ConfirmBooking)
-			user.POST("/booking/confirm/online/payment", bookingServer.UserAuthenticate, bookingServer.OnlinePayment)
-			user.POST("/booking/confirm/online/payment/success", bookingServer.UserAuthenticate, bookingServer.PaymentSuccess)
-			user.POST("/booking/confirm/online/payment/success/render", bookingServer.UserAuthenticate, bookingServer.PaymentSuccessPage)
+			user.GET("/booking/confirm/online/payment", bookingServer.OnlinePayment)
+			user.GET("/booking/confirm/online/payment/success", bookingServer.PaymentSuccess)
+			user.GET("/booking/confirm/online/payment/success/render", bookingServer.PaymentSuccessPage)
 			confirmedUser := user.Group("/confirmed")
 			{
 				confirmedUser.POST("/login", bookingServer.PNRLogin)

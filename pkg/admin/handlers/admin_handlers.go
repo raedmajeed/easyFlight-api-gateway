@@ -15,13 +15,6 @@ func VerifyAirline(ctx *gin.Context, client pb.AdminAirlineClient) {
 	timeout := time.Second * 1000
 	cont, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
-
-	// go func() {
-
-	// 	<-ctx.Request.Context().Done()
-	// 	// after cancel
-	// }()
-
 	airlineId := ctx.Param("airline_id")
 	newCont := metadata.NewOutgoingContext(cont, metadata.Pairs("airline_id", airlineId))
 	response, err := client.AdminVerifyAirline(newCont,

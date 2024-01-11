@@ -9,13 +9,13 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-
+// ClientDial Client Dial method connect to the grpc admin client port
 func ClientDial(cfg config.Configure) (pb.AdminAirlineClient, error) {
-	grpc, err := grpc.Dial(":" + cfg.ADMINPORT, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	grpcClient, err := grpc.Dial(":"+cfg.ADMINPORT, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
-		log.Printf("error Dialing to grpc client: %s, ", cfg.ADMINPORT)
+		log.Printf("error dialing to grpc client: %s, ", cfg.ADMINPORT)
 		return nil, err
 	}
-	log.Printf("succesfully Connected to Admin Client at port: %v", cfg.ADMINPORT)
-	return pb.NewAdminAirlineClient(grpc), nil
+	log.Printf("succesfully connected to admin client at port: %v", cfg.ADMINPORT)
+	return pb.NewAdminAirlineClient(grpcClient), nil
 }

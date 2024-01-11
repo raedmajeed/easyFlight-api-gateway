@@ -53,50 +53,45 @@ func NewAirlineRoutes(c *gin.Engine, cfg config.Configure) {
 		seats := airline.Group("/seats")
 		{
 			seats.POST("", airlineHandler.AirlineAuthenticate, airlineHandler.CreateAirlineSeat)
-			// 	seats.PUT("/:seat_id", airlineHandler.UpdateSeat)
-			// 	seats.GET("", airlineHandler.GetSeats)
-			// 	seats.DELETE("/:seat_id", airlineHandler.DeleteSeat)
+			//seats.PUT("/:seat_id", airlineHandler.AirlineAuthenticate, airlineHandler.UpdateSeat)
+			//seats.GET("", airlineHandler.AirlineAuthenticate, airlineHandler.GetSeats)
+			//seats.DELETE("/:seat_id", airlineHandler.AirlineAuthenticate, airlineHandler.DeleteSeat)
 		}
 
 		// Baggage Policies routes
 		baggagePolicies := airline.Group("/baggage-policies")
 		{
 			baggagePolicies.POST("", airlineHandler.AirlineAuthenticate, airlineHandler.CreateAirlineBaggagePolicy)
-			// 	baggagePolicies.PUT("/:policy_id", airlineHandler.UpdateBaggagePolicy)
-			// 	baggagePolicies.DELETE("/:policy_id", airlineHandler.DeleteBaggagePolicy)
-			// 	baggagePolicies.GET("", airlineHandler.GetBaggagePolicies)
+			//baggagePolicies.PUT("/:policy_id", airlineHandler.AirlineAuthenticate, airlineHandler.UpdateBaggagePolicy)
+			//baggagePolicies.DELETE("/:policy_id", airlineHandler.AirlineAuthenticate, airlineHandler.DeleteBaggagePolicy)
+			//baggagePolicies.GET("", airlineHandler.AirlineAuthenticate, airlineHandler.GetBaggagePolicies)
 		}
 
 		// Cancellation Policies routes
 		cancellationPolicies := airline.Group("/cancellation-policies")
 		{
 			cancellationPolicies.POST("", airlineHandler.AirlineAuthenticate, airlineHandler.CreateAirlineCancellationPolicy)
-			// 	cancellationPolicies.PUT("/:policy_id", airlineHandler.UpdateCancellationPolicy)
-			// 	cancellationPolicies.DELETE("/:policy_id", airlineHandler.DeleteCancellationPolicy)
-			// 	cancellationPolicies.GET("", airlineHandler.GetCancellationPolicies)
+			//cancellationPolicies.PUT("/:policy_id", airlineHandler.AirlineAuthenticate, airlineHandler.UpdateCancellationPolicy)
+			//cancellationPolicies.DELETE("/:policy_id", airlineHandler.AirlineAuthenticate, airlineHandler.DeleteCancellationPolicy)
+			//cancellationPolicies.GET("", airlineHandler.GetCancellationPolicies)
 		}
 
 		// Fleet routes
 		fleet := airline.Group("/fleet")
 		// {
 		fleet.POST("", airlineHandler.AirlineAuthenticate, airlineHandler.AddFleetList)
-		// 	fleet.PUT("/:fleet_id", airlineHandler.UpdateFleet)
-		// 	fleet.DELETE("/:fleet_id", airlineHandler.DeleteFleet)
-		// 	fleet.GET("/flights", airlineHandler.GetFleetFlights)
-		// 	fleet.PATCH("/:fleet_id/maintenance", airlineHandler.UpdateFleetMaintenance)
+		//fleet.PUT("/:fleet_id", airlineHandler.UpdateFleet)
+		//fleet.DELETE("/:fleet_id", airlineHandler.DeleteFleet)
+		//fleet.GET("/flights", airlineHandler.GetFleetFlights)
+		//fleet.PATCH("/:fleet_id/maintenance", airlineHandler.UpdateFleetMaintenance)
 		// }
 
 		// Flight Charts routes
 		flightCharts := airline.Group("/flight-charts")
-		// {
-		flightCharts.POST("", airlineHandler.AirlineAuthenticate, airlineHandler.CreateFlightChart)
-		// 	flightCharts.PATCH("/:chart_id/status", airlineHandler.UpdateFlightChartStatus)
-		// 	flightCharts.DELETE("/:chart_id", airlineHandler.DeleteFlightChart)
-		// 	flightCharts.GET("", airlineHandler.GetFlightCharts)
-		// }
-
-		// Cancellation Amount route
-		// airline.GET("/:airline_id/cancellation-amount", airlineHandler.GetCancellationAmount)
+		{
+			flightCharts.POST("", airlineHandler.AirlineAuthenticate, airlineHandler.CreateFlightChart)
+			//flightCharts.GET("", airlineHandler.GetFlightCharts)
+		}
 	}
 }
 
@@ -125,17 +120,56 @@ func (a *Airline) UpdateAirline(ctx *gin.Context) {
 	handler.RegisterAirline(ctx, a.client)
 }
 
+// CreateAirlineSeat Below functions deals with all operations related to seats
 func (a *Airline) CreateAirlineSeat(ctx *gin.Context) {
 	handler.CreateAirlineSeat(ctx, a.client)
 }
 
+//func (a *Airline) GetSeats(ctx *gin.Context) {
+//	handler.GetSeats(ctx, a.client)
+//}
+//
+//func (a *Airline) UpdateSeat(ctx *gin.Context) {
+//	handler.UpdateSeat(ctx, a.client)
+//}
+//
+//func (a *Airline) DeleteSeat(ctx *gin.Context) {
+//	handler.DeleteSeat(ctx, a.client)
+//}
+
+// CreateAirlineBaggagePolicy Below functions deals with all operations related to seats
 func (a *Airline) CreateAirlineBaggagePolicy(ctx *gin.Context) {
 	handler.CreateAirlineBaggagePolicy(ctx, a.client)
 }
 
+//func (a *Airline) GetBaggagePolicies(ctx *gin.Context) {
+//	handler.GetBaggagePolicies(ctx, a.client)
+//}
+//
+//func (a *Airline) UpdateBaggagePolicy(ctx *gin.Context) {
+//	handler.UpdateBaggagePolicy(ctx, a.client)
+//}
+//
+//func (a *Airline) DeleteBaggagePolicy(ctx *gin.Context) {
+//	handler.DeleteBaggagePolicy(ctx, a.client)
+//}
+
+// CreateAirlineCancellationPolicy Below functions deals with all operations related to seats
 func (a *Airline) CreateAirlineCancellationPolicy(ctx *gin.Context) {
 	handler.CreateAirlineCancellationPolicy(ctx, a.client)
 }
+
+//func (a *Airline) GetCancellationPolicies(ctx *gin.Context) {
+//	handler.GetCancellationPolicies(ctx, a.client)
+//}
+//
+//func (a *Airline) UpdateCancellationPolicy(ctx *gin.Context) {
+//	handler.UpdateCancellationPolicy(ctx, a.client)
+//}
+//
+//func (a *Airline) DeleteCancellationPolicy(ctx *gin.Context) {
+//	handler.DeleteCancellationPolicy(ctx, a.client)
+//}
 
 func (a *Airline) AirlineLogin(ctx *gin.Context) {
 	handler.Login(ctx, a.client, "airline")

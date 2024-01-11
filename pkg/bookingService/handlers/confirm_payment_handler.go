@@ -61,6 +61,9 @@ func ConfirmBooking(ctx *gin.Context, client pb.BookingClient) {
 }
 
 func OnlinePayment(ctx *gin.Context, client pb.BookingClient) {
+	//headerToken := ctx.GetHeader("Authorization")
+	//bearerToken := string([]byte(headerToken)[7:])
+
 	bookingReference := ctx.DefaultQuery("bookingRef", "")
 	token := ctx.DefaultQuery("searchToken", "")
 	if bookingReference == "" || token == "" {
@@ -75,21 +78,24 @@ func OnlinePayment(ctx *gin.Context, client pb.BookingClient) {
 	cont, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
 
-	val, ok := ctx.Get("registered_email")
-	if !ok {
-		log.Println("email id not present in jwt token, please login again")
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  errors.New("email id not present in jwt token, please login again"),
-		})
-		return
-	}
-
-	email := fmt.Sprintf("%v", val)
+	//val, ok := ctx.Get("registered_email")
+	//if !ok {
+	//	log.Println("email id not present in jwt token, please login again")
+	//	ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+	//		"status": http.StatusBadRequest,
+	//		"error":  errors.New("email id not present in jwt token, please login again"),
+	//	})
+	//	return
+	//}
+	//
+	//email := fmt.Sprintf("%v", val)
+	email := "raedam786@gmail.com"
 	response, err := client.RegisterOnlinePayment(cont, &pb.OnlinePaymentRequest{
 		Email:            email,
 		BookingReference: bookingReference,
+		Token:            token,
 	})
+
 	if err != nil {
 		log.Printf("payment unsuccesful %v err: %v", email, err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
@@ -98,14 +104,10 @@ func OnlinePayment(ctx *gin.Context, client pb.BookingClient) {
 		})
 		return
 	}
-
-	ctx.HTML(http.StatusCreated, "app.html", gin.H{
-		"UserId":           response.UserId,
-		"TotalFare":        response.TotalFare,
-		"BookingReference": response.BookingReference,
-		"Email":            response.Email,
-		"OrderId":          response.OrderId,
-		"searchToken":      token,
+	ctx.JSON(http.StatusOK, gin.H{
+		"status":  http.StatusOK,
+		"message": "details got successfully",
+		"data":    response,
 	})
 }
 
@@ -125,17 +127,18 @@ func PaymentSuccess(ctx *gin.Context, client pb.BookingClient) {
 	cont, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
 
-	val, ok := ctx.Get("registered_email")
-	if !ok {
-		log.Println("email id not present in jwt token, please login again")
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  errors.New("email id not present in jwt token, please login again"),
-		})
-		return
-	}
-
-	email := fmt.Sprintf("%v", val)
+	//val, ok := ctx.Get("registered_email")
+	//if !ok {
+	//	log.Println("email id not present in jwt token, please login again")
+	//	ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+	//		"status": http.StatusBadRequest,
+	//		"error":  errors.New("email id not present in jwt token, please login again"),
+	//	})
+	//	return
+	//}
+	//
+	//email := fmt.Sprintf("%v", val)
+	email := "raedam786@gmail.com"
 	response, err := client.ResisterPaymentConfirmed(cont, &pb.PaymentConfirmedRequest{
 		Email:            email,
 		BookingReference: bookingReference,

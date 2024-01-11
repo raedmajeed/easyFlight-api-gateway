@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/gin-gonic/gin/ginS"
 	admin "github.com/raedmajeed/api-gateway/pkg/admin"
 	booking "github.com/raedmajeed/api-gateway/pkg/bookingService"
 	c "github.com/raedmajeed/api-gateway/pkg/config"
@@ -14,7 +13,6 @@ import (
 )
 
 func main() {
-	ginS.LoadHTMLGlob("../../templates/*")
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 	conf, err := c.LoadConfigure()
@@ -22,6 +20,7 @@ func main() {
 		log.Printf("Error Loading Config Files, error: %v", err)
 	}
 	r := gin.Default()
+	//r.LoadHTMLGlob(("../../html_templates/*.html"))
 	admin.NewAdminRoutes(r, *conf)
 	admin.NewAirlineRoutes(r, *conf)
 	booking.NewBookingRoutes(r, *conf)
@@ -29,5 +28,4 @@ func main() {
 
 	sign := <-signalChan
 	fmt.Println(sign)
-
 }

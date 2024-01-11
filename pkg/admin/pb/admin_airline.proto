@@ -45,6 +45,7 @@ service AdminAirline {
 
   // gRPC methods for all actions on Airport
   rpc RegisterAirportRequest(Airport) returns (AirportResponse);
+  rpc FetchAirport(FetchRequest) returns (AirportResponse);
 
   // gRPC methods for all actions on Schedules
   rpc RegisterScheduleRequest(ScheduleRequest) returns (ScheduleResponse);
@@ -60,6 +61,11 @@ service AdminAirline {
 
   // gRPC methods for all flight chart
   rpc RegisterFlightChart(FlightChartRequest) returns (FlightChartResponse);
+}
+
+message FetchRequest {
+  string email = 1;
+  string id = 2;
 }
 
 message Error {

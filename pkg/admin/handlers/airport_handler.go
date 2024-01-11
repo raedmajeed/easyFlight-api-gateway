@@ -77,3 +77,38 @@ func CreateAirport(ctx *gin.Context, client pb.AdminAirlineClient) {
 		"data":    response,
 	})
 }
+
+//func GetAirport(ctx *gin.Context, pb pb.AdminAirlineClient) {
+//	timeLimit := time.Second * 1000
+//	context, cancel := context.WithTimeout(ctx, timeLimit)
+//	defer cancel()
+//
+//	registeredMail, ok := ctx.Get("registered_email")
+//	if !ok {
+//		ctx.AbortWithStatusJSON(http.StatusBadGateway, gin.H{
+//			"status": http.StatusBadGateway,
+//			"error":  errors.New("unable to get the logged in email from context"),
+//		})
+//	}
+//
+//	email := registeredMail.(string)
+//	var req dto.FetchAirport
+//	if err := ctx.ShouldBindJSON()
+//	//response, err := pb.
+//}
+
+//func UpdateAirport(ctx *gin.Context, pb *pb.AdminAirlineClient) {
+//	timeLimit := time.Second * 1000
+//	context, cancel := context.WithTimeout(ctx, timeLimit)
+//	defer cancel()
+//
+//	registeredMail, ok := ctx.Get("registered_email")
+//	if !ok {
+//		ctx.AbortWithStatusJSON(http.StatusBadGateway, gin.H{
+//			"status": http.StatusBadGateway,
+//			"error":  errors.New("unable to get the logged in email from context"),
+//		})
+//	}
+//
+//	email := registeredMail.(string)
+//}

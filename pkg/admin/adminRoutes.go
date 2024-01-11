@@ -14,7 +14,6 @@ import (
 type Admin struct {
 	cfg    *config.Configure
 	client pb.AdminAirlineClient
-	// redis  *redis.Client
 }
 
 func NewAdminRoutes(c *gin.Engine, cfg config.Configure) {
@@ -61,21 +60,13 @@ func NewAdminRoutes(c *gin.Engine, cfg config.Configure) {
 
 			//* Airports routes
 			admin.POST("/airports", adminHandler.AdminAuthenticate, adminHandler.CreateAirport)
-			// admin.PUT("/airports/:airport_id", adminHandler.UpdateAirport)
-			// admin.DELETE("/airports/:airport_id", adminHandler.DeleteAirport)
-			// admin.GET("/airports/:airport_id", adminHandler.GetAirport)
-			// admin.GET("/airports", adminHandler.GetAirports)
+			//admin.PUT("/airports/:airport_id", adminHandler.AdminAuthenticate, adminHandler.UpdateAirport)
+			//admin.GET("/airports/:airport_id", adminHandler.AdminAuthenticate, adminHandler.GetAirport)
+			//admin.GET("/airports", adminHandler.AdminAuthenticate, adminHandler.GetAirports)
 
 			//* Schedules routes
 			admin.POST("/schedules", adminHandler.AdminAuthenticate, adminHandler.CreateSchedule)
-			// admin.PUT("/schedules/:schedule_id", adminHandler.UpdateSchedule)
-			// admin.DELETE("/schedules/:schedule_id", adminHandler.DeleteSchedule)
-			// admin.GET("/schedules/:schedule_id", adminHandler.GetSchedule)
 			// admin.GET("/schedules", adminHandler.GetSchedules)
-
-			//* Fleet routes
-			// admin.GET("/fleet/:fleet_id", adminHandler.GetFleet)
-			// admin.GET("/fleet", adminHandler.GetFleetList)
 
 			//* Flight Charts
 			// admin.GET("/flight-charts/:chart_id", adminHandler.GetFlightChart)
@@ -137,9 +128,25 @@ func (a *Admin) VerifyAirline(ctx *gin.Context) {
 // 	handler.GetRejectedAirlines(ctx, a.client)
 // }
 
+// CreateAirport below functions helps to create airport
 func (a *Admin) CreateAirport(ctx *gin.Context) {
 	handler.CreateAirport(ctx, a.client)
 }
+
+// UpdateAirport below functions helps to update airport
+//func (a *Admin) UpdateAirport(ctx *gin.Context) {
+//	handler.UpdateAirport(ctx, a.client)
+//}
+//
+//// GetAirport below functions helps to get an airport
+//func (a *Admin) GetAirport(ctx *gin.Context) {
+//	handler.GetAirport(ctx, a.client)
+//}
+
+// GetAirports below functions helps to get all airports
+//func (a *Admin) GetAirports(ctx *gin.Context) {
+//	handler.GetAirports(ctx, a.client)
+//}
 
 func (a *Admin) CreateSchedule(ctx *gin.Context) {
 	handler.CreateSchedule(ctx, a.client)

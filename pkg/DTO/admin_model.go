@@ -34,3 +34,13 @@ type FlightChart struct {
 	FlightFleetID int `json:"flight_fleet_id" validate:"required,numeric,min=0"`
 	ScheduleID    int `json:"schedule_id" validate:"required,numeric,min=0"`
 }
+
+type FetchAirport struct {
+	AirportCode string `json:"airport_code" validate:"required,max=5"`
+}
+
+type UpdateAirportRequest struct {
+	Website      string `json:"website"`
+	ContactEmail string `json:"contact_email"`
+	ContactPhone string `json:"contact_phone"`
+}

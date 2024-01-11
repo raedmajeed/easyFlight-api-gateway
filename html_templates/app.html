@@ -14,26 +14,26 @@
     <form class="w-50 pt-5" action="">
         <h1 class="mb-5 text-center">Payment Gateway</h1>
         <fieldset disabled>
-            <div class="form-group ">
+            <div class="form-group">
                 <label for="disabledTextInput">Booking Reference</label>
-                <input type="text"  class="form-control mt-3" id="BookingReference" value="{{.BookingReference}}">
+                <input type="text"  class="form-control mt-3" id="BookingReference" value="{{.bookingRef}}">
                 <script>console.log("------------------Booking Reference----------")</script>
             </div>
             <div class="form-group mt-3">
                 <label for="disabledTextInput">order ID</label>
-                <input type="text"  class="form-control mt-3" id="paymentid" value="{{.OrderId}}">
+                <input type="text"  class="form-control mt-3" id="paymentid" value="{{.orderId}}">
             </div>
             <div class="form-group mt-3">
                 <label for="disabledTextInput">Total Amount</label>
                 <input type="text"  class="form-control mt-3" id="total" value="{{.TotalFare}}">
             </div>
             <div class="form-group mt-3">
-                <label for="disabledTextInput">Total Amount</label>
+                <label for="disabledTextInput">Search Token</label>
                 <input type="text"  class="form-control mt-3" id="searchToken" value="{{.searchToken}}">
             </div>
         </fieldset>
         <div class="d-flex justify-content-center">
-            <button type="submit" id="rzp-button1" class="btn btn-primary mt-5 w-50 ">Submit</button>
+            <button type="submit" id="rzp-button1" class="btn btn-primary mt-5 w-50 ">PAY NOW</button>
         </div>
     </form>
 </div>
@@ -43,12 +43,8 @@
 
 
 
-
-
-
-
 <script>
-    // console.log("--------------in test mode------------")
+    console.log("--------------in test mode------------")
 
     const userid=document.getElementById("BookingReference").value
     const orderid=document.getElementById("paymentid").value
@@ -57,7 +53,7 @@
 
     var options = {
         "key": "rzp_test_3Zm0sCFZcVmktU", // Enter the Key ID generated from the Dashboard
-        "amount": "{{.total}}", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+        "amount": "{{.TotalFare}}", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
         "currency": "INR",
         "name": "EasyFlight",
         "description": "Test Transaction",
@@ -96,16 +92,17 @@
     }
 
     function verifyPayment(response, userid, orderid, searchToken) {
-        console.log("-------verify payment--------");
-        console.log("----------response", response, userid, orderid);
         $.ajax({
-            url: `/booking/confirm/online/payment/?booking_reference=${userid}&search_token=${searchToken}&payment_id=${response.razorpay_payment_id}&order_id=${response.razorpay_order_id}&signature=${response.razorpay_signature}&total=${total}`,
+            url: `/api/v1/user/booking/confirm/online/payment/success?booking_reference=${userid}&search_token=${searchToken}&payment_id=${response.razorpay_payment_id}&order_id=${response.razorpay_order_id}&signature=${response.razorpay_signature}&total=${total}`,
             method: 'GET',
+            // headers: {
+            //     'Authorization': 'Bearer ' + "{{.token}}" // replace 'token' with your actual token
+            // },
             success: function(data) {
                 if (data.status) {
                     console.log('Payment success');
                     const id = response.razorpay_payment_id;
-                    window.location.href = `/user/success?booking_reference=${userid}`;
+                    window.location.href = `http://localhost:8080/api/v1/user/booking/confirm/online/payment/success/render?booking_reference=${userid}`;
                 } else {
                     console.log('Payment failed');
                     swal({
@@ -125,3 +122,4 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 </body>
 </html>
+
