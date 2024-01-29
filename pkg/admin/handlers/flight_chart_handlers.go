@@ -59,11 +59,6 @@ func CreateFlightChart(ctx *gin.Context, client pb.AdminAirlineClient) {
 	})
 }
 
-type DepArrAirport struct {
-	depAirport string
-	arrAirport string
-}
-
 func GetFlightChart(ctx *gin.Context, client pb.AdminAirlineClient) {
 	timeLimit := time.Second * 1000
 	newCtx, cancel := context.WithTimeout(ctx, timeLimit)

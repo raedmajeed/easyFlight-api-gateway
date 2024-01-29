@@ -76,10 +76,6 @@ func CreateAirport(ctx *gin.Context, client pb.AdminAirlineClient) {
 	})
 }
 
-type AirportCode struct {
-	airportCode string
-}
-
 func GetAirport(ctx *gin.Context, client pb.AdminAirlineClient) {
 	timeLimit := time.Second * 1000
 	newCtx, cancel := context.WithTimeout(ctx, timeLimit)
