@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="ProjectModuleManager">
-    <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/easyFlight-api-gateway.iml" filepath="$PROJECT_DIR$/.idea/easyFlight-api-gateway.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../../go-mini-projects/go-chanel/.idea/go-chanel.iml" filepath="$PROJECT_DIR$/../../go-mini-projects/go-chanel/.idea/go-chanel.iml" />
-    </modules>
-  </component>
-</project>
