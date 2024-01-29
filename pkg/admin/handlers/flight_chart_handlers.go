@@ -58,3 +58,80 @@ func CreateFlightChart(ctx *gin.Context, client pb.AdminAirlineClient) {
 		"data":    response,
 	})
 }
+
+type DepArrAirport struct {
+	depAirport string
+	arrAirport string
+}
+
+func GetFlightChart(ctx *gin.Context, client pb.AdminAirlineClient) {
+	timeLimit := time.Second * 1000
+	newCtx, cancel := context.WithTimeout(ctx, timeLimit)
+	defer cancel()
+
+	depAirport := ctx.Query("dep")
+	arrAirport := ctx.Query("arr")
+
+	response, err := client.GetFlightChart(newCtx, &pb.GetChartRequest{
+		DepAirport: depAirport,
+		ArrAirport: arrAirport,
+	})
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": "false",
+			"error":  err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusCreated, gin.H{
+		"status":  "true",
+		"message": "response fetched successfully",
+		"data":    response,
+	})
+}
+
+func GetFlightCharts(ctx *gin.Context, client pb.AdminAirlineClient) {
+	timeLimit := time.Second * 1000
+	newCtx, cancel := context.WithTimeout(ctx, timeLimit)
+	defer cancel()
+
+	response, err := client.GetFlightCharts(newCtx, &pb.EmptyRequest{})
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": "false",
+			"error":  err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusCreated, gin.H{
+		"status":  "true",
+		"message": "response fetched successfully",
+		"data":    response,
+	})
+}
+
+func GetFlightChartForAirline(ctx *gin.Context, client pb.AdminAirlineClient) {
+	timeLimit := time.Second * 1000
+	newCtx, cancel := context.WithTimeout(ctx, timeLimit)
+	defer cancel()
+
+	em, _ := ctx.Get("registered_email")
+	email := em.(string)
+	id := ctx.Param("id")
+	response, err := client.GetFlightChartForAirline(newCtx, &pb.FetchRequest{
+		Id:    id,
+		Email: email,
+	})
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": "false",
+			"error":  err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusCreated, gin.H{
+		"status":  "true",
+		"message": "response fetched successfully",
+		"data":    response,
+	})
+}

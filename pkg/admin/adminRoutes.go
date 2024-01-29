@@ -29,14 +29,6 @@ func NewAdminRoutes(c *gin.Engine, cfg config.Configure) {
 
 	apiVersion := c.Group("/api/v1")
 	{
-		//* Group routes under /api/v1/airline
-		// airline := apiVersion.Group("/airline")
-		{
-			// Airline-specific routes
-			// airline.GET("/:airline_id", adminHandler.GetAirline)
-			// airline.DELETE("/:airline_id", adminHandler.DeleteAirline)
-		}
-
 		//* Group routes under /api/v1/admin
 		admin := apiVersion.Group("/admin")
 		{
@@ -55,22 +47,36 @@ func NewAdminRoutes(c *gin.Engine, cfg config.Configure) {
 			//! block airline here
 
 			//* Airlines routes
-			// admin.GET("/airlines/accepted", adminHandler.GetAcceptedAirlines)
-			// admin.GET("/airlines/rejected", adminHandler.GetRejectedAirlines)
+			airline := admin.Group("/airlines", adminHandler.AdminAuthenticate)
+			{
+				// Airline-specific routes
+				airline.GET("/", adminHandler.GetAllAirlines)
+				airline.GET("/accepted", adminHandler.GetAcceptedAirlines)
+				airline.GET("/rejected", adminHandler.GetRejectedAirlines)
 
+			}
 			//* Airports routes
-			admin.POST("/airports", adminHandler.AdminAuthenticate, adminHandler.CreateAirport)
-			//admin.PUT("/airports/:airport_id", adminHandler.AdminAuthenticate, adminHandler.UpdateAirport)
-			//admin.GET("/airports/:airport_id", adminHandler.AdminAuthenticate, adminHandler.GetAirport)
-			//admin.GET("/airports", adminHandler.AdminAuthenticate, adminHandler.GetAirports)
+			airport := admin.Group("/airports", adminHandler.AdminAuthenticate)
+			{
+				airport.POST("/", adminHandler.CreateAirport)
+				airport.DELETE("/", adminHandler.DeleteAirport)
+				airport.GET("/airport", adminHandler.GetAirport)
+				airport.GET("/", adminHandler.GetAirports)
+			}
 
 			//* Schedules routes
-			admin.POST("/schedules", adminHandler.AdminAuthenticate, adminHandler.CreateSchedule)
-			// admin.GET("/schedules", adminHandler.GetSchedules)
+			schedules := admin.Group("/schedules", adminHandler.AdminAuthenticate)
+			{
+				schedules.POST("/", adminHandler.CreateSchedule)
+				schedules.GET("/", adminHandler.GetSchedules)
+			}
 
 			//* Flight Charts
-			// admin.GET("/flight-charts/:chart_id", adminHandler.GetFlightChart)
-			// admin.GET("/flight-charts", adminHandler.GetFlightCharts)
+			flightCharts := admin.Group("/flight-charts", adminHandler.AdminAuthenticate)
+			{
+				flightCharts.GET("/flight", adminHandler.GetFlightChart)
+				flightCharts.GET("/", adminHandler.GetFlightCharts)
+			}
 		}
 	}
 }
@@ -112,44 +118,52 @@ func (a *Admin) VerifyAirline(ctx *gin.Context) {
 	handler.VerifyAirline(ctx, a.client)
 }
 
-// func (a *Admin) GetAirline(ctx *gin.Context) {
-// 	handler.GetAirline(ctx, a.client)
-// }
+func (a *Admin) GetAllAirlines(ctx *gin.Context) {
+	handler.GetAllAirlines(ctx, a.client)
+}
 
-// func (a *Admin) DeleteAirline(ctx *gin.Context) {
-// 	handler.DeleteAirline(ctx, a.client)
-// }
+func (a *Admin) GetAcceptedAirlines(ctx *gin.Context) {
+	handler.GetAcceptedAirlines(ctx, a.client)
+}
 
-// func (a *Admin) GetAcceptedAirlines(ctx *gin.Context) {
-// 	handler.GetAcceptedAirlines(ctx, a.client)
-// }
-
-// func (a *Admin) GetRejectedAirlines(ctx *gin.Context) {
-// 	handler.GetRejectedAirlines(ctx, a.client)
-// }
+func (a *Admin) GetRejectedAirlines(ctx *gin.Context) {
+	handler.GetRejectedAirlines(ctx, a.client)
+}
 
 // CreateAirport below functions helps to create airport
 func (a *Admin) CreateAirport(ctx *gin.Context) {
 	handler.CreateAirport(ctx, a.client)
 }
 
-// UpdateAirport below functions helps to update airport
-//func (a *Admin) UpdateAirport(ctx *gin.Context) {
-//	handler.UpdateAirport(ctx, a.client)
-//}
-//
-//// GetAirport below functions helps to get an airport
-//func (a *Admin) GetAirport(ctx *gin.Context) {
-//	handler.GetAirport(ctx, a.client)
-//}
+// GetAirport below functions helps to get an airport
+func (a *Admin) GetAirport(ctx *gin.Context) {
+	handler.GetAirport(ctx, a.client)
+}
 
-// GetAirports below functions helps to get all airports
-//func (a *Admin) GetAirports(ctx *gin.Context) {
-//	handler.GetAirports(ctx, a.client)
-//}
+// DeleteAirport GetAirport below functions helps to delete an airport
+func (a *Admin) DeleteAirport(ctx *gin.Context) {
+	handler.DeleteAirport(ctx, a.client)
+}
+
+func (a *Admin) GetAirports(ctx *gin.Context) {
+	handler.GetAirports(ctx, a.client)
+}
 
 func (a *Admin) CreateSchedule(ctx *gin.Context) {
 	handler.CreateSchedule(ctx, a.client)
+}
+
+// GetSchedules GetAirports below functions helps to get all schedules
+func (a *Admin) GetSchedules(ctx *gin.Context) {
+	handler.GetSchedules(ctx, a.client)
+}
+
+func (a *Admin) GetFlightCharts(ctx *gin.Context) {
+	handler.GetFlightCharts(ctx, a.client)
+}
+
+func (a *Admin) GetFlightChart(ctx *gin.Context) {
+	handler.GetFlightChart(ctx, a.client)
 }
 
 func (a *Admin) AdminLogin(ctx *gin.Context) {

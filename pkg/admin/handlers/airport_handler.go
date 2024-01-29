@@ -30,16 +30,15 @@ func CreateAirport(ctx *gin.Context, client pb.AdminAirlineClient) {
 	}
 	//? Validating struct
 	validate := validator.New(validator.WithRequiredStructEnabled())
-	validate.RegisterValidation("alphaspace", utitlity.AlphaSpace)
-	validate.RegisterValidation("emailcst", utitlity.EmailValidation)
-	validate.RegisterValidation("phone", utitlity.PhoneNumberValidation)
+	_ = validate.RegisterValidation("alphaspace", utitlity.AlphaSpace)
+	_ = validate.RegisterValidation("emailcst", utitlity.EmailValidation)
+	_ = validate.RegisterValidation("phone", utitlity.PhoneNumberValidation)
 
 	if err := validate.Struct(req); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 		})
 		for _, e := range err.(validator.ValidationErrors) {
-			log.Printf("struct validation errors %v, %v", e.Field(), e.Tag())
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 				"error": fmt.Sprintf("error in field %v, error: %v", e.Field(), e.Tag()),
 			})
@@ -63,7 +62,6 @@ func CreateAirport(ctx *gin.Context, client pb.AdminAirlineClient) {
 	})
 
 	if err != nil {
-		log.Printf("error registering airport err: %v", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  err.Error(),
@@ -78,37 +76,74 @@ func CreateAirport(ctx *gin.Context, client pb.AdminAirlineClient) {
 	})
 }
 
-//func GetAirport(ctx *gin.Context, pb pb.AdminAirlineClient) {
-//	timeLimit := time.Second * 1000
-//	context, cancel := context.WithTimeout(ctx, timeLimit)
-//	defer cancel()
-//
-//	registeredMail, ok := ctx.Get("registered_email")
-//	if !ok {
-//		ctx.AbortWithStatusJSON(http.StatusBadGateway, gin.H{
-//			"status": http.StatusBadGateway,
-//			"error":  errors.New("unable to get the logged in email from context"),
-//		})
-//	}
-//
-//	email := registeredMail.(string)
-//	var req dto.FetchAirport
-//	if err := ctx.ShouldBindJSON()
-//	//response, err := pb.
-//}
+type AirportCode struct {
+	airportCode string
+}
 
-//func UpdateAirport(ctx *gin.Context, pb *pb.AdminAirlineClient) {
-//	timeLimit := time.Second * 1000
-//	context, cancel := context.WithTimeout(ctx, timeLimit)
-//	defer cancel()
-//
-//	registeredMail, ok := ctx.Get("registered_email")
-//	if !ok {
-//		ctx.AbortWithStatusJSON(http.StatusBadGateway, gin.H{
-//			"status": http.StatusBadGateway,
-//			"error":  errors.New("unable to get the logged in email from context"),
-//		})
-//	}
-//
-//	email := registeredMail.(string)
-//}
+func GetAirport(ctx *gin.Context, client pb.AdminAirlineClient) {
+	timeLimit := time.Second * 1000
+	newCtx, cancel := context.WithTimeout(ctx, timeLimit)
+	defer cancel()
+
+	airportCode, _ := ctx.GetQuery("airport_code")
+
+	response, err := client.GetAirport(newCtx, &pb.AirportRequest{
+		AirportCode: airportCode,
+	})
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": "false",
+			"error":  err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusCreated, gin.H{
+		"status":  "true",
+		"message": "response fetched successfully",
+		"data":    response,
+	})
+}
+
+func GetAirports(ctx *gin.Context, client pb.AdminAirlineClient) {
+	timeLimit := time.Second * 1000
+	newCtx, cancel := context.WithTimeout(ctx, timeLimit)
+	defer cancel()
+
+	response, err := client.GetAirports(newCtx, &pb.EmptyRequest{})
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": "false",
+			"error":  err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusCreated, gin.H{
+		"status":  "true",
+		"message": "response fetched successfully",
+		"data":    response,
+	})
+}
+
+func DeleteAirport(ctx *gin.Context, client pb.AdminAirlineClient) {
+	timeLimit := time.Second * 1000
+	newCtx, cancel := context.WithTimeout(ctx, timeLimit)
+	defer cancel()
+
+	airportCode, _ := ctx.GetQuery("airport_code")
+
+	response, err := client.DeleteAirport(newCtx, &pb.AirportRequest{
+		AirportCode: airportCode,
+	})
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": "false",
+			"error":  err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusCreated, gin.H{
+		"status":  "true",
+		"message": "data deleted successfully",
+		"data":    response,
+	})
+}

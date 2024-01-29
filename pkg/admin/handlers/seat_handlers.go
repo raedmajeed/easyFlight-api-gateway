@@ -80,3 +80,80 @@ func CreateAirlineSeat(ctx *gin.Context, client pb.AdminAirlineClient) {
 		"data":    response,
 	})
 }
+
+func GetSeats(ctx *gin.Context, client pb.AdminAirlineClient) {
+	nCtx, cancel := context.WithTimeout(ctx, time.Second*1000)
+	defer cancel()
+
+	em, _ := ctx.Get("registered_email")
+	email := em.(string)
+	response, err := client.FetchAllAirlineSeats(nCtx, &pb.FetchRequest{
+		Email: email,
+	})
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"status":  "success",
+		"message": "response fetched successfully",
+		"data":    response,
+	})
+}
+
+func GetSeat(ctx *gin.Context, client pb.AdminAirlineClient) {
+	nCtx, cancel := context.WithTimeout(ctx, time.Second*1000)
+	defer cancel()
+
+	id := ctx.Param("id")
+	em, _ := ctx.Get("registered_email")
+	email := em.(string)
+
+	response, err := client.FetchAirlineSeat(nCtx, &pb.FetchRequest{
+		Id:    id,
+		Email: email,
+	})
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"status":  "success",
+		"message": "response fetched successfully",
+		"data":    response,
+	})
+}
+
+func DeleteSeat(ctx *gin.Context, client pb.AdminAirlineClient) {
+	nCtx, cancel := context.WithTimeout(ctx, time.Second*1000)
+	defer cancel()
+
+	id := ctx.Param("id")
+	em, _ := ctx.Get("registered_email")
+	email := em.(string)
+	response, err := client.DeleteAirlineSeat(nCtx, &pb.FetchRequest{
+		Id:    id,
+		Email: email,
+	})
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"status":  "success",
+		"message": "data deleted successfully",
+		"data":    response,
+	})
+}

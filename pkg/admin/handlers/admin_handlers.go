@@ -20,7 +20,6 @@ func VerifyAirline(ctx *gin.Context, client pb.AdminAirlineClient) {
 	response, err := client.AdminVerifyAirline(newCont,
 		&pb.EmptyRequest{},
 	)
-	//! CHANGE TO MESSAGE, ADD RETRY
 
 	if err != nil {
 		log.Printf("error verifying airline err: %v", err.Error())

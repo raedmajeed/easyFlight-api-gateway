@@ -84,3 +84,79 @@ func CreateAirlineCancellationPolicy(ctx *gin.Context, client pb.AdminAirlineCli
 		"data":    response,
 	})
 }
+
+func GetCancellationPolicies(ctx *gin.Context, client pb.AdminAirlineClient) {
+	nCtx, cancel := context.WithTimeout(ctx, time.Second*1000)
+	defer cancel()
+
+	em, _ := ctx.Get("registered_email")
+	email := em.(string)
+	response, err := client.FetchAllAirlineCancellations(nCtx, &pb.FetchRequest{
+		Email: email,
+	})
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"status":  "success",
+		"message": "response fetched successfully",
+		"data":    response,
+	})
+}
+
+func GetCancellationPolicy(ctx *gin.Context, client pb.AdminAirlineClient) {
+	nCtx, cancel := context.WithTimeout(ctx, time.Second*1000)
+	defer cancel()
+
+	id := ctx.Param("id")
+	em, _ := ctx.Get("registered_email")
+	email := em.(string)
+	response, err := client.FetchAirlineCancellation(nCtx, &pb.FetchRequest{
+		Id:    id,
+		Email: email,
+	})
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"status":  "success",
+		"message": "response fetched successfully",
+		"data":    response,
+	})
+}
+
+func DeleteCancellationPolicy(ctx *gin.Context, client pb.AdminAirlineClient) {
+	nCtx, cancel := context.WithTimeout(ctx, time.Second*1000)
+	defer cancel()
+
+	id := ctx.Param("id")
+	em, _ := ctx.Get("registered_email")
+	email := em.(string)
+	response, err := client.DeleteAirlineCancellation(nCtx, &pb.FetchRequest{
+		Id:    id,
+		Email: email,
+	})
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"status":  "success",
+		"message": "data deleted successfully",
+		"data":    response,
+	})
+}

@@ -3,7 +3,6 @@ package handlers
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"time"
 
@@ -21,7 +20,6 @@ func RegisterAirline(ctx *gin.Context, client pb.AdminAirlineClient) {
 
 	var req dto.AirlineCompanyRequest
 	if err := ctx.BindJSON(&req); err != nil {
-		log.Printf("error binding JSON")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  err.Error(),
@@ -31,15 +29,14 @@ func RegisterAirline(ctx *gin.Context, client pb.AdminAirlineClient) {
 
 	//? Validating struct
 	validate := validator.New(validator.WithRequiredStructEnabled())
-	validate.RegisterValidation("emailcst", utitlity.EmailValidation)
-	validate.RegisterValidation("phone", utitlity.PhoneNumberValidation)
+	_ = validate.RegisterValidation("emailcst", utitlity.EmailValidation)
+	_ = validate.RegisterValidation("phone", utitlity.PhoneNumberValidation)
 	err := validate.Struct(req)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 		})
 		for _, e := range err.(validator.ValidationErrors) {
-			log.Printf("struct validation errors %v, %v", e.Field(), e.Tag())
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 				"error": fmt.Sprintf("error in field %v, error: %v", e.Field(), e.Tag()),
 			})
@@ -58,7 +55,6 @@ func RegisterAirline(ctx *gin.Context, client pb.AdminAirlineClient) {
 	})
 
 	if err != nil {
-		log.Printf("error registering airline err: %v", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  err.Error(),
@@ -67,7 +63,7 @@ func RegisterAirline(ctx *gin.Context, client pb.AdminAirlineClient) {
 	}
 
 	ctx.JSON(http.StatusCreated, gin.H{
-		"status":  http.StatusAccepted,
+		"status":  "success",
 		"message": "Airline Creation initiated, check mail for OTP",
 		"data":    response,
 	})
@@ -80,7 +76,6 @@ func VerifyRegistration(ctx *gin.Context, client pb.AdminAirlineClient) {
 
 	var req dto.OTP
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		log.Printf("error binding JSON")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  err.Error(),
@@ -94,7 +89,6 @@ func VerifyRegistration(ctx *gin.Context, client pb.AdminAirlineClient) {
 			"status": http.StatusBadRequest,
 		})
 		for _, e := range err.(validator.ValidationErrors) {
-			log.Printf("struct validation errors %v, %v", e.Field(), e.Tag())
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 				"error": fmt.Sprintf("error in field %v, error: %v", e.Field(), e.Tag()),
 			})
@@ -108,7 +102,6 @@ func VerifyRegistration(ctx *gin.Context, client pb.AdminAirlineClient) {
 	})
 
 	if err != nil {
-		log.Printf("error registering airline err: %v", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  err.Error(),
@@ -117,26 +110,69 @@ func VerifyRegistration(ctx *gin.Context, client pb.AdminAirlineClient) {
 	}
 
 	ctx.JSON(http.StatusCreated, gin.H{
-		"status":  http.StatusAccepted,
-		"message": "OTP verified, Airline Creation succesful. Will be sending the login credentials once verification is completed",
+		"status":  "success",
+		"message": "OTP verified, Airline Creation successful. Will be sending the login credentials once verification is completed",
 		"data":    response,
 	})
 }
 
-func UpdateAirline(ctx *gin.Context, client pb.AdminAirlineClient) {
+func GetAllAirlines(ctx *gin.Context, client pb.AdminAirlineClient) {
+	nCtx, cancel := context.WithTimeout(ctx, time.Second*1000)
+	defer cancel()
+
+	response, err := client.FetchAllAirlines(nCtx, &pb.EmptyRequest{})
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"status":  "success",
+		"message": "response fetched successfully",
+		"data":    response,
+	})
 }
 
-// func VerifyAirline(ctx *gin.Context, client pb.AdminAirlineClient) {
-// }
+func GetAcceptedAirlines(ctx *gin.Context, client pb.AdminAirlineClient) {
+	nCtx, cancel := context.WithTimeout(ctx, time.Second*1000)
+	defer cancel()
 
-// func GetAirline(ctx *gin.Context, client pb.AdminAirlineClient) {
-// }
+	response, err := client.GetAcceptedAirlines(nCtx, &pb.EmptyRequest{})
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
+		})
+		return
+	}
 
-// func DeleteAirline(ctx *gin.Context, client pb.AdminAirlineClient) {
-// }
+	ctx.JSON(http.StatusOK, gin.H{
+		"status":  "success",
+		"message": "response fetched successfully",
+		"data":    response,
+	})
+}
 
-// func GetAcceptedAirlines(ctx *gin.Context, client pb.AdminAirlineClient) {
-// }
+func GetRejectedAirlines(ctx *gin.Context, client pb.AdminAirlineClient) {
+	nCtx, cancel := context.WithTimeout(ctx, time.Second*1000)
+	defer cancel()
 
-// func GetRejectedAirlines(ctx *gin.Context, client pb.AdminAirlineClient) {
-// }
+	response, err := client.GetRejectedAirlines(nCtx, &pb.EmptyRequest{})
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"status":  "success",
+		"message": "response fetched successfully",
+		"data":    response,
+	})
+
+}

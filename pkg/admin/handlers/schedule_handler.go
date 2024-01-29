@@ -30,8 +30,8 @@ func CreateSchedule(ctx *gin.Context, client pb.AdminAirlineClient) {
 	}
 	//? Validating struct
 	validate := validator.New(validator.WithRequiredStructEnabled())
-	validate.RegisterValidation("date", utitlity.Date)
-	validate.RegisterValidation("time", utitlity.Time)
+	_ = validate.RegisterValidation("date", utitlity.Date)
+	_ = validate.RegisterValidation("time", utitlity.Time)
 
 	if err := validate.Struct(req); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
@@ -67,6 +67,26 @@ func CreateSchedule(ctx *gin.Context, client pb.AdminAirlineClient) {
 	ctx.JSON(http.StatusCreated, gin.H{
 		"status":  http.StatusAccepted,
 		"message": "schedule Created",
+		"data":    response,
+	})
+}
+
+func GetSchedules(ctx *gin.Context, client pb.AdminAirlineClient) {
+	timeLimit := time.Second * 1000
+	newCtx, cancel := context.WithTimeout(ctx, timeLimit)
+	defer cancel()
+
+	response, err := client.GetSchedules(newCtx, &pb.EmptyRequest{})
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": "false",
+			"error":  err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusCreated, gin.H{
+		"status":  "true",
+		"message": "response fetched successfully",
 		"data":    response,
 	})
 }

@@ -75,3 +75,79 @@ func AddFleetList(ctx *gin.Context, client pb.AdminAirlineClient) {
 		"data":    response,
 	})
 }
+
+func GetFleetFlight(ctx *gin.Context, client pb.AdminAirlineClient) {
+	nCtx, cancel := context.WithTimeout(ctx, time.Second*1000)
+	defer cancel()
+
+	id := ctx.Param("id")
+	em, _ := ctx.Get("registered_email")
+	email := em.(string)
+	response, err := client.GetFlightFleet(nCtx, &pb.FetchRequest{
+		Id:    id,
+		Email: email,
+	})
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"status":  "success",
+		"message": "response fetched successfully",
+		"data":    response,
+	})
+}
+
+func GetFleetFlights(ctx *gin.Context, client pb.AdminAirlineClient) {
+	nCtx, cancel := context.WithTimeout(ctx, time.Second*1000)
+	defer cancel()
+
+	em, _ := ctx.Get("registered_email")
+	email := em.(string)
+	response, err := client.GetFlightFleets(nCtx, &pb.FetchRequest{
+		Email: email,
+	})
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"status":  "success",
+		"message": "response fetched successfully",
+		"data":    response,
+	})
+}
+
+func DeleteFleet(ctx *gin.Context, client pb.AdminAirlineClient) {
+	nCtx, cancel := context.WithTimeout(ctx, time.Second*1000)
+	defer cancel()
+
+	id := ctx.Param("id")
+	em, _ := ctx.Get("registered_email")
+	email := em.(string)
+	response, err := client.DeleteFlightFleet(nCtx, &pb.FetchRequest{
+		Id:    id,
+		Email: email,
+	})
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"status":  "success",
+		"message": "data deleted successfully",
+		"data":    response,
+	})
+}
