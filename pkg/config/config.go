@@ -1,28 +1,29 @@
 package config
 
 import (
-	"github.com/spf13/viper"
+	"log"
+	"os"
 )
 
 type Configure struct {
-	PORT         string `mapstructure:"PORT"`
-	ADMINPORT    string `mapstructure:"ADMINPORT"`
-	BSERVICEPORT string `mapstructure:"BSERVICEPORT"`
-	SECRETKEY    string `mapstructure:"SECRETKEY"`
-	REDISHOST    string `mapstructure:"REDISHOST"`
+	PORT         string `json:"PORT"`
+	ADMINPORT    string `json:"ADMINPORT"`
+	BSERVICEPORT string `json:"BSERVICEPORT"`
+	SECRETKEY    string `json:"SECRETKEY"`
+	REDISHOST    string `json:"REDISHOST"`
 }
 
 func LoadConfigure() (*Configure, error) {
 	var cfg Configure
 
-	viper.SetConfigFile("../../.env")
-	err := viper.ReadInConfig()
+	// Read from environment variables
+	cfg.PORT = os.Getenv("PORT")
+	cfg.ADMINPORT = os.Getenv("ADMINPORT")
+	cfg.BSERVICEPORT = os.Getenv("BSERVICEPORT")
+	cfg.SECRETKEY = os.Getenv("SECRETKEY")
+	cfg.REDISHOST = os.Getenv("REDISHOST")
 
-	err = viper.Unmarshal(&cfg)
-
-	if err != nil {
-		return &Configure{}, nil
-	}
+	log.Println(cfg)
 
 	return &cfg, nil
 }

@@ -10,8 +10,6 @@ COPY . .
 
 WORKDIR ./cmd/api
 
-RUN go build -o app
-
-EXPOSE 7777
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o app
 
 CMD ["./app"]

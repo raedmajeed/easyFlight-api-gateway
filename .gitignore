@@ -1,6 +1,6 @@
 
-flight_booking_d.sql
-flight_booking_db.sql
+# flight_booking_d.sql
+# flight_booking_db.sql
 flight_booking_service.sql
 
 .env
