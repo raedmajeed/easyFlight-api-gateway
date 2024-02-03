@@ -1,0 +1,821 @@
+basePath: /api/v1
+host: localhost:8086
+info:
+  contact:
+    email: support@easyflight.com
+    name: EasyFlight Support
+    url: http://www.easyflight.com/support
+  description: |-
+    This is a flight booking system where users can book flights giveing the departure and arrival airport.
+    Users have the option to filter flight based on max stops.
+  termsOfService: http://swagger.io/terms/
+  title: Flight Booking System
+  version: "1.0"
+paths:
+  /api/v1/admin/airlines:
+    get:
+      consumes:
+      - application/json
+      description: Get all airlines
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Get all airlines
+      tags:
+      - Airline
+  /api/v1/admin/airlines/accepted:
+    get:
+      consumes:
+      - application/json
+      description: Get accepted airlines
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Get accepted airlines
+      tags:
+      - Airline
+  /api/v1/admin/airlines/rejected:
+    get:
+      consumes:
+      - application/json
+      description: Get rejected airlines
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Get rejected airlines
+      tags:
+      - Airline
+  /api/v1/admin/airports:
+    get:
+      consumes:
+      - application/json
+      description: Get all airports
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Get all airports
+      tags:
+      - Airport
+    post:
+      consumes:
+      - application/json
+      description: Create airport
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Create airport
+      tags:
+      - Airport
+  /api/v1/admin/airports/{airport_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete airport by ID
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Delete airport by ID
+      tags:
+      - Airport
+    get:
+      consumes:
+      - application/json
+      description: Get airport by ID
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Get airport by ID
+      tags:
+      - Airport
+  /api/v1/admin/flight-charts:
+    get:
+      consumes:
+      - application/json
+      description: Get all flight charts
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Get all flight charts
+      tags:
+      - FlightCharts
+  /api/v1/admin/flight-charts/{flight_chart_id}:
+    get:
+      consumes:
+      - application/json
+      description: Get a flight chart by ID
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Get a flight chart by ID
+      tags:
+      - FlightCharts
+  /api/v1/admin/flight-types:
+    get:
+      consumes:
+      - application/json
+      description: Get all flight types
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Get all flight types
+      tags:
+      - FlightTypes
+  /api/v1/admin/flight-types/{flight_type_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a flight type by ID
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Delete a flight type by ID
+    get:
+      consumes:
+      - application/json
+      description: Get a flight type by ID
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Get a flight type by ID
+      tags:
+      - FlightTypes
+    put:
+      consumes:
+      - application/json
+      description: Update a flight type by ID
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Update a flight type by ID
+      tags:
+      - FlightTypes
+  /api/v1/admin/login:
+    post:
+      consumes:
+      - application/json
+      description: Admin login
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Admin login
+      tags:
+      - Admin
+  /api/v1/admin/schedules:
+    get:
+      consumes:
+      - application/json
+      description: Get all schedules
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Get all schedules
+      tags:
+      - Schedules
+    post:
+      consumes:
+      - application/json
+      description: Create schedule
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Create schedule
+      tags:
+      - Schedules
+  /api/v1/admin/verify-airline/{airline_id}:
+    patch:
+      consumes:
+      - application/json
+      description: Verify airline
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Verify airline
+      tags:
+      - Airline
+  /api/v1/airline/{airline_id}:
+    put:
+      consumes:
+      - application/json
+      description: Update airline information
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Update airline information
+      tags:
+      - Airline
+  /api/v1/airline/baggage-policies:
+    get:
+      consumes:
+      - application/json
+      description: Get all baggage policies
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Get all baggage policies
+      tags:
+      - AirlineBaggage
+    post:
+      consumes:
+      - application/json
+      description: Create airline baggage policy
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Create airline baggage policy
+      tags:
+      - AirlineBaggage
+  /api/v1/airline/baggage-policies/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a baggage policy by ID
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Delete a baggage policy by ID
+      tags:
+      - AirlineBaggage
+    get:
+      consumes:
+      - application/json
+      description: Get a baggage policy by ID
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Get a baggage policy by ID
+      tags:
+      - AirlineBaggage
+  /api/v1/airline/cancellation-policies:
+    get:
+      consumes:
+      - application/json
+      description: Get all cancellation policies
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Get all cancellation policies
+      tags:
+      - AirlineCancellation
+    post:
+      consumes:
+      - application/json
+      description: Create airline cancellation policy
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Create airline cancellation policy
+      tags:
+      - AirlineCancellation
+  /api/v1/airline/cancellation-policies/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a cancellation policy by ID
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Delete a cancellation policy by ID
+      tags:
+      - AirlineCancellation
+    get:
+      consumes:
+      - application/json
+      description: Get a cancellation policy by ID
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Get a cancellation policy by ID
+      tags:
+      - AirlineCancellation
+  /api/v1/airline/fleet:
+    post:
+      consumes:
+      - application/json
+      description: Add fleet list
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Add fleet list
+      tags:
+      - FlightFleet
+  /api/v1/airline/fleet-flight:
+    get:
+      consumes:
+      - application/json
+      description: Get fleet flight
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Get fleet flight
+      tags:
+      - FlightFleet
+  /api/v1/airline/fleet-flights:
+    get:
+      consumes:
+      - application/json
+      description: Get all fleet flights
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Get all fleet flights
+      tags:
+      - FlightFleet
+  /api/v1/airline/fleet/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete fleet by ID
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Delete fleet by ID
+      tags:
+      - FlightFleet
+  /api/v1/airline/flight-chart:
+    get:
+      consumes:
+      - application/json
+      description: Get flight chart for airline
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Get flight chart for airline
+      tags:
+      - FlightChart
+    post:
+      consumes:
+      - application/json
+      description: Create flight chart
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Create flight chart
+      tags:
+      - FlightChart
+  /api/v1/airline/forgot-password:
+    post:
+      consumes:
+      - application/json
+      description: Request password reset
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Request password reset
+      tags:
+      - Airline
+  /api/v1/airline/login:
+    post:
+      consumes:
+      - application/json
+      description: Airline login
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Airline login
+      tags:
+      - Airline
+  /api/v1/airline/register:
+    post:
+      consumes:
+      - application/json
+      description: Register an airline
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Register an airline
+      tags:
+      - Airline
+  /api/v1/airline/reset-password:
+    post:
+      consumes:
+      - application/json
+      description: Reset password
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Reset password
+      tags:
+      - Airline
+  /api/v1/airline/seats:
+    get:
+      consumes:
+      - application/json
+      description: Get all seats
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Get all seats
+      tags:
+      - AirlineSeats
+    post:
+      consumes:
+      - application/json
+      description: Create airline seat
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Create airline seat
+      tags:
+      - AirlineSeats
+  /api/v1/airline/seats/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a seat by ID
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Delete a seat by ID
+      tags:
+      - AirlineSeats
+    get:
+      consumes:
+      - application/json
+      description: Get a seat by ID
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Get a seat by ID
+      tags:
+      - AirlineSeats
+  /api/v1/airline/verify:
+    post:
+      consumes:
+      - application/json
+      description: Verify airline using OTP
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Verify airline using OTP
+      tags:
+      - Airline
+  /api/v1/airline/verify-registration:
+    post:
+      consumes:
+      - application/json
+      description: Verify airline registration
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Verify airline registration
+      tags:
+      - Airline
+  /api/v1/booking/add-travellers:
+    post:
+      consumes:
+      - application/json
+      description: Add travellers to a flight
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Add travellers to a flight
+      tags:
+      - FlightSearch
+  /api/v1/booking/confirm-booking:
+    post:
+      consumes:
+      - application/json
+      description: Confirm a booking
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Confirm a booking
+      tags:
+      - Booking
+  /api/v1/booking/online-payment:
+    post:
+      consumes:
+      - application/json
+      description: Process online payment
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Process online payment
+      tags:
+      - Booking
+  /api/v1/booking/payment-success:
+    get:
+      consumes:
+      - application/json
+      description: Payment success
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Payment success
+      tags:
+      - Booking
+  /api/v1/booking/payment-success-page:
+    get:
+      consumes:
+      - application/json
+      description: Render payment success page
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Render payment success page
+      tags:
+      - Booking
+  /api/v1/booking/pnr-login:
+    post:
+      consumes:
+      - application/json
+      description: PNR login
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: PNR login
+      tags:
+      - ConfirmedUser
+  /api/v1/booking/search-flight:
+    get:
+      consumes:
+      - application/json
+      description: Search for a flight
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Search for a flight
+      tags:
+      - FlightSearch
+  /api/v1/booking/select-flight:
+    post:
+      consumes:
+      - application/json
+      description: Select a flight
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Select a flight
+      tags:
+      - FlightSearch
+  /api/v1/booking/select-seat:
+    post:
+      consumes:
+      - application/json
+      description: Select a seat
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Select a seat
+      tags:
+      - ConfirmedUser
+  /api/v1/booking/user-login:
+    post:
+      consumes:
+      - application/json
+      description: User login
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: User login
+      tags:
+      - User
+  /api/v1/booking/user-register:
+    post:
+      consumes:
+      - application/json
+      description: User registration
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: User registration
+      tags:
+      - User
+  /api/v1/booking/verify-registration:
+    post:
+      consumes:
+      - application/json
+      description: Verify user registration
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Verify user registration
+      tags:
+      - User
+  /user/signup:
+    post:
+      operationId: User SignUp
+      produces:
+      - application/json
+      responses: {}
+      summary: SignUp for users
+      tags:
+      - User
+      - FlightTypes
+swagger: "2.0"

@@ -2,10 +2,11 @@ package handlers
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
-	pb "github.com/raedmajeed/api-gateway/pkg/bookingService/pb"
 	"log"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
+	pb "github.com/raedmajeed/api-gateway/pkg/bookingService/pb"
 )
 
 type JsonRequest struct {
@@ -45,7 +46,7 @@ func SelectSeat(ctx *gin.Context, client pb.BookingClient) {
 
 	ctx.JSON(http.StatusCreated, gin.H{
 		"status":  http.StatusAccepted,
-		"message": fmt.Sprintf("%v seats added succesfully"),
+		"message": "seats added succesfully",
 		"data":    response,
 	})
 }

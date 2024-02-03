@@ -6,3 +6,9 @@ proto admin:
 
 protoc booking:
 	cd pkg/bookingService/pb && protoc --go-grpc_out=. --go_out=. booking.proto
+
+adminSwag:
+	swag init -g ../cmd/api/main.go -o ./docs -d ./pkg
+
+bookingSwag:
+	swag init -g ../../cmd/api/main.go -o ./docs -d ./pkg/bookingService -generalInfo ./booking.json
