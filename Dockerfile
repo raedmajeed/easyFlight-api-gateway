@@ -10,6 +10,8 @@ COPY . .
 
 WORKDIR ./cmd/api
 
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o app
+RUN echo "Running arm64 check-1"
+
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -o app
 
 CMD ["./app"]

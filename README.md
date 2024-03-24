@@ -2,11 +2,10 @@
 Easy Fly Api Gateway Service
 
 ### MYSQL DOCKER COMMAND
-docker run -d --network easyflight-network -p 3306:3306 \
--e MYSQL_ALLOW_EMPTY_PASSWORD=true \
--e MYSQL_DATABASE=flight_booking_service \
--e MYSQL_PASSWORD='' \
---name mysql-service mysql
+docker run -d --network mynetwork -p 3307:3306 \
+-e MYSQL_ROOT_PASSWORD=12345 \
+-e MYSQL_DATABASE="flight_booking_booking" \
+--name mysql mysql
 
 ### KAFKA DOCKER COMMAND
 docker run -d --network easyflight-network -p 9092:9092 \
@@ -29,8 +28,8 @@ docker run -d --network easyflight-network \
 --name notification-service notification-service
 
 ### BOOKING SERVICE DOCKER COMMAND
-docker run -d --network easyflight-network -p 9091:9091 \
---name booking-service booking-service
+docker run -d --network mynetwork -p 9091:9091 \
+--name booking-service booking-service:6
 
 ### FRONTEND SERVICE DOCKER COMMAND
 docker run -d --network easyflight-network -p 3030:3030 \
